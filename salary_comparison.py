@@ -1,4 +1,4 @@
-# @title Run Analysis { run: "auto" }
+# @title Run Analysis { run: "auto", display-mode: "form" }
 
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -6,41 +6,45 @@ from typing import List, Dict
 from collections import namedtuple
 
 focus = "VUSD"  # @param ["HESD", "OVSD", "OUHSD", "OSD", "PVSD", "RSD", "SPUSD", "SVUSD", "VUSD"]
+raise_percent = 0  # @param {type:"number"}
 BLUE = "blue"
 LIGHTGRAY = "#dddddd"
 GRAY = "#bbbbbb"
 
 ventura_df = pd.read_csv(
-    "./2022-2023-Ventura.csv",
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/assets/2022-2023-Ventura.csv",
     index_col="step",
 )
-rio_df = pd.read_csv("./2022-2023-Rio.csv", index_col="step")
+rio_df = pd.read_csv(
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/assets/2022-2023-Rio.csv",
+    index_col="step",
+)
 santa_paula_df = pd.read_csv(
-    "./2020-2021-SantaPaula.csv",
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/assets/2020-2021-SantaPaula.csv",
     index_col="step",
 )
 oxnard_union_df = pd.read_csv(
-    "./2022-2023-OxnardU.csv",
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/assets/2022-2023-OxnardU.csv",
     index_col="step",
 )
 hueneme_df = pd.read_csv(
-    "./2022-2023-Hueneme.csv",
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/assets/2022-2023-Hueneme.csv",
     index_col="step",
 )
 ocean_view_df = pd.read_csv(
-    "./2022-2023-OceanView.csv",
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/assets/2022-2023-OceanView.csv",
     index_col="step",
 )
 oxnard_elem_df = pd.read_csv(
-    "./2022-2023-OxnardE.csv",
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/assets/2022-2023-OxnardE.csv",
     index_col="step",
 )
 pleasant_valley_df = pd.read_csv(
-    "./2022-2023-PleasantValley.csv",
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/assets/2022-2023-PleasantValley.csv",
     index_col="step",
 )
 simi_valley_df = pd.read_csv(
-    "./2022-2023-SimiValley.csv",
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/assets/2022-2023-SimiValley.csv",
     index_col="step",
 )
 
@@ -102,16 +106,33 @@ masters_with_75: pd.DataFrame = pd.concat(
 ).rename(columns={i: DISTRICTS[i] for i in range(len(DISTRICTS))})
 
 
+def apply_proposed_raise(
+    df: pd.DataFrame, focus: str, raise_percent: float
+) -> pd.DataFrame:
+    """Apply a proposed raise to the district in focus.
+
+    :df: The dataframe that contains all the salary data.
+    :focus: The district to which the proposed raise will be applied.
+    :raise_percent: The proposed raise as a percentage.
+    """
+    df[focus] = df[focus] * (1 + raise_percent / 100)
+    return df
+
+
 def calc_career_earnings(
-    df: pd.DataFrame, districts: List[str] = DISTRICTS
+    df: pd.DataFrame,
+    districts: List[str] = DISTRICTS,
 ) -> Dict[str, int]:
     """Calculates the carreer earnings across each district.
 
     :df: The DataFrame used to calculate the career earnings
     :districts: the list of districts to include in the calculation.
+    :focus: The district to apply the raise to.
+    :raise_percent: The proposed raise stored as a float.
     :returns: A dictionary with keys of the district abbreviations and values of the
         carreer earnings.
     """
+
     return {district: int(df[district].sum()) for district in districts}
 
 
@@ -156,14 +177,9 @@ def calc_career_diffs(
         for district in districts
     ]
     print(
-        f"This analysis assumes a teacher starts with a {degree} degree\n"
-        f"with {units} units and remains in {focus} for a 36 year career.\n"
-        f"The {focus} teacher makes:\n"
+        f"This analysis assumes a teacher starts with a {degree} degree with {units} units\n"
+        f"and remains in {focus} for a 36 year career. The {focus} teacher makes:\n"
     )
-    print(f"{career_earnings}")
-    print(f"{career_premiums}")
-    print(f"{career_earnings_deltas}")
-    print(f"{career_earnings_deltas_insurance}")
     for district, delta, insurance_delta in zip(
         districts, career_earnings_deltas, career_earnings_deltas_insurance
     ):
@@ -191,7 +207,11 @@ def calc_career_diffs(
 
 
 def plot_salaries(
-    df: pd.DataFrame, districts: List[str], focus: str, degree: str, units: int
+    df: pd.DataFrame,
+    districts: List[str],
+    focus: str,
+    degree: str,
+    units: int,
 ) -> None:
     """Creates and displays the plot for the salary visualization.
 
@@ -238,9 +258,11 @@ parameter_sets = (
 )
 for parameter_set in parameter_sets:
     print(f"{parameter_set.degree} Degree and {parameter_set.units} Units\n")
-    career_earnings_bachelors = calc_career_earnings(parameter_set.dataframe)
+    career_earnings = calc_career_earnings(
+        apply_proposed_raise(parameter_set.dataframe, focus, raise_percent)
+    )
     calc_career_diffs(
-        career_earnings_bachelors,
+        career_earnings,
         districts=DISTRICTS,
         focus=focus,
         degree=parameter_set.degree,
@@ -253,3 +275,4 @@ for parameter_set in parameter_sets:
         degree=parameter_set.degree,
         units=parameter_set.units,
     )
+    print()
