@@ -48,18 +48,19 @@ simi_valley_df = pd.read_csv(
     index_col="step",
 )
 
-DISTRICTS = [
-    "HESD",
-    "OVSD",
-    "OUHSD",
-    "OSD",
-    "PVSD",
-    "RSD",
-    "SPUSD",
-    "SVUSD",
-    "VUSD",
-]
-bachelors_with_30: pd.DataFrame = pd.concat(
+MONTHLY_PREMIUMS = {
+    "HESD": 0,
+    "OVSD": 350,
+    "OUHSD": 180,
+    "OSD": 130,
+    "PVSD": 200,
+    "RSD": 200,
+    "SPUSD": 250,
+    "SVUSD": 250,
+    "VUSD": 0,
+}
+DISTRICTS = list(MONTHLY_PREMIUMS.keys())
+bachelors_with_30_units: pd.DataFrame = pd.concat(
     [
         hueneme_df["class 3"],
         ocean_view_df["class 3"],
@@ -74,7 +75,7 @@ bachelors_with_30: pd.DataFrame = pd.concat(
     axis=1,
     ignore_index=True,
 ).rename(columns={i: DISTRICTS[i] for i in range(len(DISTRICTS))})
-masters_with_60: pd.DataFrame = pd.concat(
+masters_with_60_units: pd.DataFrame = pd.concat(
     [
         hueneme_df["class 5"],
         ocean_view_df["class 5"],
@@ -89,7 +90,7 @@ masters_with_60: pd.DataFrame = pd.concat(
     axis=1,
     ignore_index=True,
 ).rename(columns={i: DISTRICTS[i] for i in range(len(DISTRICTS))})
-masters_with_75: pd.DataFrame = pd.concat(
+masters_with_75_units: pd.DataFrame = pd.concat(
     [
         hueneme_df["class 5"],
         ocean_view_df["class 5"],
@@ -107,7 +108,9 @@ masters_with_75: pd.DataFrame = pd.concat(
 
 
 def apply_proposed_raise(
-    df: pd.DataFrame, focus: str, raise_percent: float
+    df: pd.DataFrame,
+    focus: str,
+    raise_percent: float,
 ) -> pd.DataFrame:
     """Apply a proposed raise to the district in focus.
 
@@ -121,7 +124,9 @@ def apply_proposed_raise(
 
 def calc_career_earnings(
     df: pd.DataFrame,
-    districts: List[str] = DISTRICTS,
+    districts: List[str],
+    focus: str,
+    raise_percent: float,
 ) -> Dict[str, int]:
     """Calculates the carreer earnings across each district.
 
@@ -132,12 +137,13 @@ def calc_career_earnings(
     :returns: A dictionary with keys of the district abbreviations and values of the
         carreer earnings.
     """
-
+    df = apply_proposed_raise(df, focus, raise_percent)
     return {district: int(df[district].sum()) for district in districts}
 
 
 def calc_career_diffs(
     career_earnings: Dict[str, int],
+    monthly_premiums: Dict[str, int],
     districts: List[str],
     focus: str,
     degree: str,
@@ -154,17 +160,6 @@ def calc_career_diffs(
 
     :returns: None
     """
-    monthly_premiums = {
-        "HESD": 0,
-        "OVSD": 350,
-        "OUHSD": 180,
-        "OSD": 130,
-        "PVSD": 200,
-        "RSD": 200,
-        "SPUSD": 250,
-        "SVUSD": 250,
-        "VUSD": 0,
-    }
     career_premiums = {
         district: (monthly * 12 * 36) for district, monthly in monthly_premiums.items()
     }
@@ -252,17 +247,21 @@ def plot_salaries(
 
 SalaryParameters = namedtuple("SalaryParameters", ["degree", "dataframe", "units"])
 parameter_sets = (
-    SalaryParameters("Bachelor's", bachelors_with_30, 30),
-    SalaryParameters("Master's", masters_with_60, 60),
-    SalaryParameters("Master's", masters_with_75, 75),
+    SalaryParameters("Bachelor's", bachelors_with_30_units, 30),
+    SalaryParameters("Master's", masters_with_60_units, 60),
+    SalaryParameters("Master's", masters_with_75_units, 75),
 )
 for parameter_set in parameter_sets:
     print(f"{parameter_set.degree} Degree and {parameter_set.units} Units\n")
-    career_earnings = calc_career_earnings(
-        apply_proposed_raise(parameter_set.dataframe, focus, raise_percent)
+    career_earnings_bachelors = calc_career_earnings(
+        df=parameter_set.dataframe,
+        districts=DISTRICTS,
+        focus=focus,
+        raise_percent=raise_percent,
     )
     calc_career_diffs(
-        career_earnings,
+        career_earnings_bachelors,
+        monthly_premiums=MONTHLY_PREMIUMS,
         districts=DISTRICTS,
         focus=focus,
         degree=parameter_set.degree,
