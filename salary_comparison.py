@@ -245,33 +245,34 @@ def plot_salaries(
     plt.show()
 
 
-SalaryParameters = namedtuple("SalaryParameters", ["degree", "dataframe", "units"])
-parameter_sets = (
-    SalaryParameters("Bachelor's", bachelors_with_30_units, 30),
-    SalaryParameters("Master's", masters_with_60_units, 60),
-    SalaryParameters("Master's", masters_with_75_units, 75),
-)
-for parameter_set in parameter_sets:
-    print(f"{parameter_set.degree} Degree and {parameter_set.units} Units\n")
-    career_earnings_bachelors = calc_career_earnings(
-        df=parameter_set.dataframe,
-        districts=DISTRICTS,
-        focus=focus,
-        raise_percent=raise_percent,
+if __name__ == "__main__":
+    SalaryParameters = namedtuple("SalaryParameters", ["degree", "dataframe", "units"])
+    parameter_sets = (
+        SalaryParameters("Bachelor's", bachelors_with_30_units, 30),
+        SalaryParameters("Master's", masters_with_60_units, 60),
+        SalaryParameters("Master's", masters_with_75_units, 75),
     )
-    calc_career_diffs(
-        career_earnings_bachelors,
-        monthly_premiums=MONTHLY_PREMIUMS,
-        districts=DISTRICTS,
-        focus=focus,
-        degree=parameter_set.degree,
-        units=parameter_set.units,
-    )
-    plot_salaries(
-        parameter_set.dataframe,
-        districts=DISTRICTS,
-        focus=focus,
-        degree=parameter_set.degree,
-        units=parameter_set.units,
-    )
-    print()
+    for parameter_set in parameter_sets:
+        print(f"{parameter_set.degree} Degree and {parameter_set.units} Units\n")
+        career_earnings_bachelors = calc_career_earnings(
+            df=parameter_set.dataframe,
+            districts=DISTRICTS,
+            focus=focus,
+            raise_percent=raise_percent,
+        )
+        calc_career_diffs(
+            career_earnings_bachelors,
+            monthly_premiums=MONTHLY_PREMIUMS,
+            districts=DISTRICTS,
+            focus=focus,
+            degree=parameter_set.degree,
+            units=parameter_set.units,
+        )
+        plot_salaries(
+            parameter_set.dataframe,
+            districts=DISTRICTS,
+            focus=focus,
+            degree=parameter_set.degree,
+            units=parameter_set.units,
+        )
+        print()
