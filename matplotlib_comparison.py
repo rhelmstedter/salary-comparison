@@ -1,11 +1,15 @@
-import pandas as pd
-from typing import List, Dict
-import plotly.graph_objects as go
-from dash import html
+# @title Run Analysis { run: "auto", display-mode: "form" }
 
+import pandas as pd
+from matplotlib import pyplot as plt
+from typing import List, Dict
+from collections import namedtuple
+
+focus = "VUSD"  # @param ["HESD", "OVSD", "OUHSD", "OSD", "PVSD", "RSD", "SPUSD", "SVUSD", "VUSD"]
+raise_percent = 0  # @param {type:"number"}
 BLUE = "blue"
-LIGHTGRAY = "#eeeeee"
-GRAY = "#aaaaaa"
+LIGHTGRAY = "#dddddd"
+GRAY = "#bbbbbb"
 
 ventura_df = pd.read_csv(
     "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/assets/2022-2023-Ventura.csv",
@@ -56,7 +60,7 @@ MONTHLY_PREMIUMS = {
     "VUSD": 0,
 }
 DISTRICTS = list(MONTHLY_PREMIUMS.keys())
-bachelors_30_units: pd.DataFrame = pd.concat(
+bachelors_with_30_units: pd.DataFrame = pd.concat(
     [
         hueneme_df["class 3"],
         ocean_view_df["class 3"],
@@ -71,82 +75,7 @@ bachelors_30_units: pd.DataFrame = pd.concat(
     axis=1,
     ignore_index=True,
 ).rename(columns={i: DISTRICTS[i] for i in range(len(DISTRICTS))})
-bachelors_45_units: pd.DataFrame = pd.concat(
-    [
-        hueneme_df["class 4"],
-        ocean_view_df["class 4"],
-        oxnard_union_df["class 3"],
-        oxnard_elem_df["class 4"],
-        pleasant_valley_df["class 4"],
-        rio_df["class 3"],
-        santa_paula_df["class 3"],
-        simi_valley_df["class 4"],
-        ventura_df["class 3"],
-    ],
-    axis=1,
-    ignore_index=True,
-).rename(columns={i: DISTRICTS[i] for i in range(len(DISTRICTS))})
-bachelors_60_units: pd.DataFrame = pd.concat(
-    [
-        hueneme_df["class 5"],
-        ocean_view_df["class 5"],
-        oxnard_union_df["class 3"],
-        oxnard_elem_df["class 5"],
-        pleasant_valley_df["class 4"],
-        rio_df["class 4"],
-        santa_paula_df["class 3"],
-        simi_valley_df["class 5"],
-        ventura_df["class 3"],
-    ],
-    axis=1,
-    ignore_index=True,
-).rename(columns={i: DISTRICTS[i] for i in range(len(DISTRICTS))})
-bachelors_75_units: pd.DataFrame = pd.concat(
-    [
-        hueneme_df["class 5"],
-        ocean_view_df["class 5"],
-        oxnard_union_df["class 3"],
-        oxnard_elem_df["class 5"],
-        pleasant_valley_df["class 4"],
-        rio_df["class 4"],
-        santa_paula_df["class 3"],
-        simi_valley_df["class 6"],
-        ventura_df["class 4"],
-    ],
-    axis=1,
-    ignore_index=True,
-).rename(columns={i: DISTRICTS[i] for i in range(len(DISTRICTS))})
-masters_30_units: pd.DataFrame = pd.concat(
-    [
-        hueneme_df["class 4"],
-        ocean_view_df["class 4"],
-        oxnard_union_df["class 3"],
-        oxnard_elem_df["class 3"],
-        pleasant_valley_df["class 3"] + 500,
-        rio_df["class 5"],
-        santa_paula_df["class 5"],
-        simi_valley_df["class 6"],
-        ventura_df["class 3"],
-    ],
-    axis=1,
-    ignore_index=True,
-).rename(columns={i: DISTRICTS[i] for i in range(len(DISTRICTS))})
-masters_45_units: pd.DataFrame = pd.concat(
-    [
-        hueneme_df["class 5"],
-        ocean_view_df["class 5"],
-        oxnard_union_df["class 4"],
-        oxnard_elem_df["class 4"],
-        pleasant_valley_df["class 4"] + 500,
-        rio_df["class 5"],
-        santa_paula_df["class 5"],
-        simi_valley_df["class 6"],
-        ventura_df["class 3"],
-    ],
-    axis=1,
-    ignore_index=True,
-).rename(columns={i: DISTRICTS[i] for i in range(len(DISTRICTS))})
-masters_60_units: pd.DataFrame = pd.concat(
+masters_with_60_units: pd.DataFrame = pd.concat(
     [
         hueneme_df["class 5"],
         ocean_view_df["class 5"],
@@ -161,7 +90,7 @@ masters_60_units: pd.DataFrame = pd.concat(
     axis=1,
     ignore_index=True,
 ).rename(columns={i: DISTRICTS[i] for i in range(len(DISTRICTS))})
-masters_75_units: pd.DataFrame = pd.concat(
+masters_with_75_units: pd.DataFrame = pd.concat(
     [
         hueneme_df["class 5"],
         ocean_view_df["class 5"],
@@ -176,18 +105,6 @@ masters_75_units: pd.DataFrame = pd.concat(
     axis=1,
     ignore_index=True,
 ).rename(columns={i: DISTRICTS[i] for i in range(len(DISTRICTS))})
-
-
-SALARY_PARAMETERS = {
-    "Bachelor's with at least 30 units": [bachelors_30_units, "Bachelor's", 30],
-    "Bachelor's with at least 45 units": [bachelors_45_units, "Bachelor's", 45],
-    "Bachelor's with at least 60 units": [bachelors_60_units, "Bachelor's", 60],
-    "Bachelor's with at least 75 units": [bachelors_75_units, "Bachelor's", 75],
-    "Master's with at least 30 units": [masters_30_units, "Master's", 30],
-    "Master's with at least 45 units": [masters_45_units, "Master's", 45],
-    "Master's with at least 60 units": [masters_60_units, "Master's", 60],
-    "Master's with at least 75 units": [masters_75_units, "Master's", 75],
-}
 
 
 def apply_proposed_raise(
@@ -209,6 +126,7 @@ def calc_career_earnings(
     df: pd.DataFrame,
     districts: List[str],
     focus: str,
+    raise_percent: float,
 ) -> Dict[str, int]:
     """Calculates the carreer earnings across each district.
 
@@ -219,6 +137,7 @@ def calc_career_earnings(
     :returns: A dictionary with keys of the district abbreviations and values of the
         carreer earnings.
     """
+    df = apply_proposed_raise(df, focus, raise_percent)
     return {district: int(df[district].sum()) for district in districts}
 
 
@@ -252,11 +171,9 @@ def calc_career_diffs(
         - (career_earnings[district] - career_premiums[district])
         for district in districts
     ]
-    career_diffs = []
-    career_diffs.append(
-        html.P(
-            f"""This analysis assumes a teacher starts with a {degree} degree with {units} units and remains in {focus} for a 36 year career.\nThe {focus} teacher makes:\n"""
-        )
+    print(
+        f"This analysis assumes a teacher starts with a {degree} degree with {units} units\n"
+        f"and remains in {focus} for a 36 year career. The {focus} teacher makes:\n"
     )
     for district, delta, insurance_delta in zip(
         districts, career_earnings_deltas, career_earnings_deltas_insurance
@@ -265,42 +182,32 @@ def calc_career_diffs(
             continue
         if insurance_delta < 0 and delta < 0:
             if insurance_delta == delta:
-                career_diffs.append(
-                    html.P(f"🟥 ${abs(delta):,.0f} less than {district}.\n")
-                )
+                print(f"🟥 ${abs(delta):,.0f} less than {district}.")
             else:
-                career_diffs.append(
-                    html.P(
-                        f"🟥 ${abs(insurance_delta):,.0f} to ${abs(delta):,.0f} less than {district}.\n"
-                    )
+                print(
+                    f"🟥 ${abs(insurance_delta):,.0f} to ${abs(delta):,.0f} less than {district}."
                 )
         elif insurance_delta >= 0 and delta <= 0:
-            career_diffs.append(
-                html.P(
-                    f"🟧 ${abs(delta):,.0f} less to ${abs(insurance_delta):,.0f} more than {district}.\n"
-                )
+            print(
+                f"🟧 ${abs(delta):,.0f} less to ${abs(insurance_delta):,.0f} more than {district}."
             )
         elif insurance_delta >= 0 and delta >= 0:
             if insurance_delta == delta:
-                html.P(
-                    career_diffs.append(f"🟩 ${abs(delta):,.0f} more than {district}.\n")
-                )
+                print(f"🟩 ${abs(delta):,.0f} more than {district}.")
             else:
-                career_diffs.append(
-                    html.P(
-                        f"🟩 ${abs(delta):,.0f} to ${abs(insurance_delta):,.0f} more than {district}.\n"
-                    )
+                print(
+                    f"🟩 ${abs(delta):,.0f} to ${abs(insurance_delta):,.0f} more than {district}."
                 )
-    return career_diffs
+    print()
 
 
-def construct_ploty_graph(
+def plot_salaries(
     df: pd.DataFrame,
     districts: List[str],
     focus: str,
     degree: str,
     units: int,
-) -> go.Figure:
+) -> None:
     """Creates and displays the plot for the salary visualization.
 
     :df: DataFrame that contains the salary for each district based on the parameters given.
@@ -312,86 +219,60 @@ def construct_ploty_graph(
     :returns: None
     """
 
-    fig = go.Figure()
-    annotations = []
+    plt.style.use("fivethirtyeight")
+    plt.figure(figsize=(8, 7))
     for district in districts:
         if district == focus:
             line_color = BLUE
             text_color = BLUE
+            fontweight = "bold"
         else:
             line_color = LIGHTGRAY
             text_color = GRAY
-        fig.add_trace(
-            go.Scatter(x=df.index, y=df[district], line=dict(color=line_color, width=3))
+            fontweight = "light"
+        plt.text(
+            max(df.index),
+            df.loc[36, district],
+            s=district,
+            color=text_color,
+            fontweight=fontweight,
         )
-        # Labels
-        annotations.append(
-            dict(
-                xref="paper",
-                x=1,
-                y=df.loc[36, district],
-                xanchor="left",
-                yanchor="middle",
-                text=f"{district}",
-                font=dict(family="Arial", size=12, color=text_color),
-                showarrow=False,
-            )
-        )
-    fig.update_layout(
-        width=800,
-        height=500,
-        xaxis=dict(
-            showline=True,
-            showgrid=False,
-            showticklabels=True,
-            linecolor="rgb(204, 204, 204)",
-            linewidth=2,
-            ticks="outside",
-            title="Years Teaching",
-            tickfont=dict(
-                family="Arial",
-                size=12,
-                color="rgb(82, 82, 82)",
-            ),
-        ),
-        yaxis=dict(
-            showgrid=False,
-            zeroline=False,
-            showline=True,
-            showticklabels=True,
-            linecolor="rgb(204, 204, 204)",
-            linewidth=2,
-            ticks="outside",
-            title="Annual Salary in Dollars",
-            tickfont=dict(
-                family="Arial",
-                size=12,
-                color="rgb(82, 82, 82)",
-            ),
-        ),
-        autosize=False,
-        margin=dict(
-            autoexpand=False,
-            l=100,
-            r=100,
-            t=110,
-        ),
-        showlegend=False,
-        plot_bgcolor="white",
+        plt.plot(df.index, df[district], color=line_color)
+    plt.title(f"Career Salary with {degree} Degree and {units} units")
+    plt.xlabel("Years Teaching")
+    plt.ylabel("Annual Salary in Dollars")
+    plt.tight_layout()
+    plt.show()
+
+
+if __name__ == "__main__":
+    SalaryParameters = namedtuple("SalaryParameters", ["degree", "dataframe", "units"])
+    parameter_sets = (
+        SalaryParameters("Bachelor's", bachelors_with_30_units, 30),
+        SalaryParameters("Master's", masters_with_60_units, 60),
+        SalaryParameters("Master's", masters_with_75_units, 75),
     )
-    # Title
-    annotations.append(
-        dict(
-            xref="paper",
-            yref="paper",
-            x=0.0,
-            y=1.05,
-            xanchor="left",
-            yanchor="bottom",
-            text=f"Career Salary with {degree} Degree\nand {units} units",
-            font=dict(family="Arial", size=30, color="rgb(37,37,37)"),
-            showarrow=False,
+    for parameter_set in parameter_sets:
+        print(f"{parameter_set.degree} Degree and {parameter_set.units} Units\n")
+        career_earnings_bachelors = calc_career_earnings(
+            df=parameter_set.dataframe,
+            districts=DISTRICTS,
+            focus=focus,
+            raise_percent=raise_percent,
         )
-    )
-    fig.update_layout(annotations=annotations)
-    return fig
+        calc_career_diffs(
+            career_earnings_bachelors,
+            monthly_premiums=MONTHLY_PREMIUMS,
+            districts=DISTRICTS,
+            focus=focus,
+            degree=parameter_set.degree,
+            units=parameter_set.units,
+        )
+        plot_salaries(
+            parameter_set.dataframe,
+            districts=DISTRICTS,
+            focus=focus,
+            degree=parameter_set.degree,
+            units=parameter_set.units,
+        )
+        print()
