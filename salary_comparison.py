@@ -8,39 +8,39 @@ LIGHTGRAY = "#eeeeee"
 GRAY = "#aaaaaa"
 
 ventura_df = pd.read_csv(
-    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/assets/2022-2023-Ventura.csv",
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-Ventura.csv",
     index_col="step",
 )
 rio_df = pd.read_csv(
-    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/assets/2022-2023-Rio.csv",
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-Rio.csv",
     index_col="step",
 )
 santa_paula_df = pd.read_csv(
-    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/assets/2020-2021-SantaPaula.csv",
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2020-2021-SantaPaula.csv",
     index_col="step",
 )
 oxnard_union_df = pd.read_csv(
-    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/assets/2022-2023-OxnardU.csv",
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-OxnardU.csv",
     index_col="step",
 )
 hueneme_df = pd.read_csv(
-    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/assets/2022-2023-Hueneme.csv",
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-Hueneme.csv",
     index_col="step",
 )
 ocean_view_df = pd.read_csv(
-    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/assets/2022-2023-OceanView.csv",
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-OceanView.csv",
     index_col="step",
 )
 oxnard_elem_df = pd.read_csv(
-    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/assets/2022-2023-OxnardE.csv",
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-OxnardE.csv",
     index_col="step",
 )
 pleasant_valley_df = pd.read_csv(
-    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/assets/2022-2023-PleasantValley.csv",
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-PleasantValley.csv",
     index_col="step",
 )
 simi_valley_df = pd.read_csv(
-    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/assets/2022-2023-SimiValley.csv",
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-SimiValley.csv",
     index_col="step",
 )
 
