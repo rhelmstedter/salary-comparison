@@ -1,5 +1,4 @@
-intro = """# Salary Comparsion for Ventura County School Districts
-This notebook contains a salary comparison for 9 school districts in Ventura county.
+intro = """This dashboard displays a salary comparison for the following school districts in Ventura county.
 + Hueneme Elementary School District (HESD)
 + Ocean View School District (OVSD)
 + Oxnard Union High School District (OUHSD)
@@ -27,5 +26,7 @@ Due to the variation in benefits and qualifications for columns across districts
 | VUSD     | 0               |
 """
 
-analysis_text = """## Run Analysis\nChoose a district to focus on from the dropdown menu. Then enter the number of units and degree type. This action will highlight that district on the graph and compute the differences in salary across a 36 year career."""
+analysis_text = """## Analysis\nChoose a district to focus on from the dropdown menu. Then choose the number of units and degree type. You can also see how a proposed raise will impart salary moving forward. The differences in salary across a 36 year career are computed and displayed below the graph."""
 
+outro = """## Notes
+The analysis above is the result of converting salary schedules from pdfs to csv files (some of which I have had to type out by hand). While I have tried to be as accurate as possible in my analysis, it is possible that I made a mistake when transcribing salaries, or in the calculations included in the code. If anyone notices a mistake please let me know at rhelmstedter@gmail.com. I will do my best to correct it as soon a possible. All of the salary schedules are publically available in PDF form from the respective district webites. They can also be found in PDF and CSV on the [github repo](https://github.com/rhelmstedter/salary-comparison) I have put togther."""

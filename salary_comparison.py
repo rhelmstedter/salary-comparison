@@ -3,7 +3,7 @@ from typing import List, Dict
 import plotly.graph_objects as go
 from dash import html
 
-BLUE = "blue"
+TEAL = "#079A82"
 LIGHTGRAY = "#eeeeee"
 GRAY = "#aaaaaa"
 
@@ -305,7 +305,7 @@ def construct_ploty_graph(
 
     :df: DataFrame that contains the salary for each district based on the parameters given.
     :districts: The list of districts to include in the plot.
-    :focus: The district to highlight in blue on the chart.
+    :focus: The district to highlight in on the chart.
     :degree: The degree held by the teacher, either Bachelor's or Master's.
     :units: The number of units obtained by the teacher.
 
@@ -316,8 +316,8 @@ def construct_ploty_graph(
     annotations = []
     for district in districts:
         if district == focus:
-            line_color = BLUE
-            text_color = BLUE
+            line_color = TEAL
+            text_color = TEAL
         else:
             line_color = LIGHTGRAY
             text_color = GRAY
@@ -338,8 +338,6 @@ def construct_ploty_graph(
             )
         )
     fig.update_layout(
-        width=800,
-        height=500,
         xaxis=dict(
             showline=True,
             showgrid=False,
@@ -363,13 +361,14 @@ def construct_ploty_graph(
             linewidth=2,
             ticks="outside",
             title="Annual Salary in Dollars",
+            tickprefix="$",
             tickfont=dict(
                 family="Arial",
                 size=12,
                 color="rgb(82, 82, 82)",
             ),
         ),
-        autosize=False,
+        autosize=True,
         margin=dict(
             autoexpand=False,
             l=100,
@@ -384,11 +383,11 @@ def construct_ploty_graph(
         dict(
             xref="paper",
             yref="paper",
-            x=0.0,
+            x=0,
             y=1.05,
             xanchor="left",
             yanchor="bottom",
-            text=f"Career Salary with {degree} Degree\nand {units} units",
+            text=f"Salary with {degree} and {units} units",
             font=dict(family="Arial", size=30, color="rgb(37,37,37)"),
             showarrow=False,
         )

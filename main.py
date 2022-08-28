@@ -1,6 +1,6 @@
 import dash
 from dash import html, dcc
-from content import intro, analysis_text
+from content import intro, analysis_text, outro
 from salary_comparison import (
     apply_proposed_raise,
     calc_career_diffs,
@@ -12,43 +12,74 @@ from dash.dependencies import Input, Output
 
 
 districts = [{"label": district, "value": district} for district in DISTRICTS]
-
+external_stylesheets = [
+    {
+        "href": "https://fonts.googleapis.com/css2?"
+                "family=Lato:wght@400;700&display=swap",
+        "rel": "stylesheet",
+    },
+]
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app.title = "VC Schools Salaray Comparison"
 app = dash.Dash()
 app.layout = html.Div(
     [
-        html.Div(dcc.Markdown(intro)),
-        html.Div(dcc.Markdown(analysis_text)),
         html.Div(
-            [
-                html.H3("District"),
-                dcc.Dropdown(
-                    id="focus",
-                    options=districts,
-                    value="VUSD",
+            children=[
+                html.H1(
+                    children="Salary Comparison", className="header-title"
+                ),
+                html.P(
+                    children="Analyze teaching salary across school"
+                    " districts in Ventura County for the"
+                    " 2022-2023 school year",
+                    className="header-description",
                 ),
             ],
+            className="header",
         ),
+        html.Div(dcc.Markdown(intro, className="wrapper")),
+        html.Div(dcc.Markdown(analysis_text, className="wrapper")),
         html.Div(
             [
-                html.H3("Degree and Units"),
-                dcc.Dropdown(
-                    id="degree_and_units",
-                    options=[
-                        {"label": label, "value": label}
-                        for label in SALARY_PARAMETERS.keys()
+                html.Div(
+                    [
+                        html.Div("District", className="menu-title"),
+                        dcc.Dropdown(
+                            id="focus",
+                            options=districts,
+                            value="VUSD",
+                            className="Dropdown",
+                        ),
                     ],
                 ),
-            ]
-        ),
-        html.Div(
-            [
-                html.H3("Proposed Raise"),
-                dcc.Dropdown(
-                    id="raise_percent",
-                    options=[{"label": i, "value": i} for i in range(25)],
-                    value=0,
+                html.Div(
+                    [
+                        html.Div("Degree and Units", className="menu-title"),
+                        dcc.Dropdown(
+                            id="degree_and_units",
+                            options=[
+                                {"label": label, "value": label}
+                                for label in SALARY_PARAMETERS.keys()
+                            ],
+                            value="Master's with at least 60 units",
+                            className="Dropdown",
+                        ),
+                    ]
                 ),
-            ]
+                html.Div(
+                    [
+                        html.Div("Proposed Raise", className="menu-title"),
+                        dcc.Dropdown(
+                            id="raise_percent",
+                            options=[{"label": i, "value": i} for i in range(25)],
+                            value=0,
+                            className="Dropdown",
+                        ),
+                    ]
+                ),
+            ],
+            className="menu",
         ),
         dcc.Graph(
             id="fig1",
@@ -59,9 +90,12 @@ app.layout = html.Div(
                 degree="Master's",
                 units=60,
             ),
+            className="card",
         ),
-        html.Div(id="career_diffs"),
+        html.Div(id="career_diffs", className="wrapper"),
+        html.Div(dcc.Markdown(outro, className="wrapper")),
     ],
+    className="wrapper",
 )
 
 
