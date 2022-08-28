@@ -21,7 +21,7 @@ external_stylesheets = [
 ]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
-app.title = "VC Schools Salaray Comparison"
+app.title = "VC Schools Salary Comparison"
 app.layout = html.Div(
     [
         html.Div(
