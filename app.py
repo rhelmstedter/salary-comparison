@@ -30,9 +30,8 @@ app.layout = html.Div(
                     children="Salary Comparison", className="header-title"
                 ),
                 html.P(
-                    children="Analyze teaching salary across school"
-                    " districts in Ventura County for the"
-                    " 2022-2023 school year",
+                    children="Analyze teaching salaries across school"
+                    " districts in Ventura County.",
                     className="header-description",
                 ),
             ],
