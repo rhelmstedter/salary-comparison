@@ -1,5 +1,4 @@
 import pandas as pd
-from typing import List, Dict
 import plotly.graph_objects as go
 from dash import html
 
@@ -207,9 +206,9 @@ def apply_proposed_raise(
 
 def calc_career_earnings(
     df: pd.DataFrame,
-    districts: List[str],
+    districts: list[str],
     focus: str,
-) -> Dict[str, int]:
+) -> dict[str, int]:
     """Calculates the carreer earnings across each district.
 
     :df: The DataFrame used to calculate the career earnings
@@ -223,13 +222,13 @@ def calc_career_earnings(
 
 
 def calc_career_diffs(
-    career_earnings: Dict[str, int],
-    monthly_premiums: Dict[str, int],
-    districts: List[str],
+    career_earnings: dict[str, int],
+    monthly_premiums: dict[str, int],
+    districts: list[str],
     focus: str,
     degree: str,
     units: int,
-) -> None:
+) -> list[html.P]:
     """Calculates and displays the differnces in earnings across a 36 year teaching career.
 
     :career_earnings: A dictionary with keys containing the district abbreviations and
@@ -296,7 +295,7 @@ def calc_career_diffs(
 
 def construct_ploty_graph(
     df: pd.DataFrame,
-    districts: List[str],
+    districts: list[str],
     focus: str,
     degree: str,
     units: int,
