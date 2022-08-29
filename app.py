@@ -1,6 +1,6 @@
 import dash
 from dash import html, dcc
-from content import intro, analysis_text, outro
+from content import analysis_text, outro, explanation
 from salary_comparison import (
     apply_proposed_raise,
     calc_career_diffs,
@@ -15,7 +15,7 @@ districts = [{"label": district, "value": district} for district in DISTRICTS]
 external_stylesheets = [
     {
         "href": "https://fonts.googleapis.com/css2?"
-                "family=Lato:wght@400;700&display=swap",
+        "family=Lato:wght@400;700&display=swap",
         "rel": "stylesheet",
     },
 ]
@@ -26,18 +26,15 @@ app.layout = html.Div(
     [
         html.Div(
             children=[
-                html.H1(
-                    children="Salary Comparison", className="header-title"
-                ),
+                html.H1(children="Lifetime Earnings For Teachers", className="header-title"),
                 html.P(
-                    children="Analyze teaching salaries across school"
-                    " districts in Ventura County.",
+                    children="The estimated lifetime earnings for teachers across school districts in Ventura County, CA.",
                     className="header-description",
                 ),
             ],
             className="header",
         ),
-        html.Div(dcc.Markdown(intro, className="wrapper")),
+        # html.Div(dcc.Markdown(intro, className="wrapper")),
         html.Div(dcc.Markdown(analysis_text, className="wrapper")),
         html.Div(
             [
@@ -92,6 +89,7 @@ app.layout = html.Div(
             className="card",
         ),
         html.Div(id="career_diffs", className="wrapper"),
+        html.Div(dcc.Markdown(explanation, className="wrapper")),
         html.Div(dcc.Markdown(outro, className="wrapper")),
     ],
     className="wrapper",

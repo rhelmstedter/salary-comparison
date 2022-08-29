@@ -346,7 +346,7 @@ def construct_ploty_graph(
             ticks="outside",
             title="Years Teaching",
             tickfont=dict(
-                family="Arial",
+                family="Lato",
                 size=12,
                 color="rgb(82, 82, 82)",
             ),
@@ -362,7 +362,7 @@ def construct_ploty_graph(
             title="Annual Salary in Dollars",
             tickprefix="$",
             tickfont=dict(
-                family="Arial",
+                family="Lato",
                 size=12,
                 color="rgb(82, 82, 82)",
             ),
@@ -387,7 +387,7 @@ def construct_ploty_graph(
             xanchor="left",
             yanchor="bottom",
             text=f"Salary with {degree} and {units} units",
-            font=dict(family="Arial", size=30, color="rgb(37,37,37)"),
+            font=dict(family="Lato", size=30, color="rgb(37,37,37)"),
             showarrow=False,
         )
     )
