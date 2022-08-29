@@ -21,7 +21,7 @@ external_stylesheets = [
 ]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
-app.title = "VC Schools Salary Comparison"
+app.title = "VC Schools Lifetime Earnings"
 app.layout = html.Div(
     [
         html.Div(
@@ -58,7 +58,7 @@ app.layout = html.Div(
                                 {"label": label, "value": label}
                                 for label in SALARY_PARAMETERS.keys()
                             ],
-                            value="Master's with at least 60 units",
+                            value="Master's and 60 units",
                             className="Dropdown",
                         ),
                     ]
@@ -80,7 +80,7 @@ app.layout = html.Div(
         dcc.Graph(
             id="fig1",
             figure=construct_ploty_graph(
-                SALARY_PARAMETERS["Master's with at least 60 units"][0],
+                SALARY_PARAMETERS["Master's and 60 units"][0],
                 DISTRICTS,
                 focus="VUSD",
                 degree="Master's",

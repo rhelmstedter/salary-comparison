@@ -178,14 +178,14 @@ masters_75_units: pd.DataFrame = pd.concat(
 
 
 SALARY_PARAMETERS = {
-    "Bachelor's with at least 30 units": [bachelors_30_units, "Bachelor's", 30],
-    "Bachelor's with at least 45 units": [bachelors_45_units, "Bachelor's", 45],
-    "Bachelor's with at least 60 units": [bachelors_60_units, "Bachelor's", 60],
-    "Bachelor's with at least 75 units": [bachelors_75_units, "Bachelor's", 75],
-    "Master's with at least 30 units": [masters_30_units, "Master's", 30],
-    "Master's with at least 45 units": [masters_45_units, "Master's", 45],
-    "Master's with at least 60 units": [masters_60_units, "Master's", 60],
-    "Master's with at least 75 units": [masters_75_units, "Master's", 75],
+    "Bachelor's and 30 units": [bachelors_30_units, "Bachelor's", 30],
+    "Bachelor's and 45 units": [bachelors_45_units, "Bachelor's", 45],
+    "Bachelor's and 60 units": [bachelors_60_units, "Bachelor's", 60],
+    "Bachelor's and 75 units": [bachelors_75_units, "Bachelor's", 75],
+    "Master's and 30 units": [masters_30_units, "Master's", 30],
+    "Master's and 45 units": [masters_45_units, "Master's", 45],
+    "Master's and 60 units": [masters_60_units, "Master's", 60],
+    "Master's and 75 units": [masters_75_units, "Master's", 75],
 }
 
 
@@ -317,25 +317,32 @@ def construct_ploty_graph(
         if district == focus:
             line_color = TEAL
             text_color = TEAL
+            # Labels
+            annotations.append(
+                dict(
+                    xref="paper",
+                    x=1,
+                    y=df.loc[36, district],
+                    xanchor="left",
+                    yanchor="middle",
+                    text=f"{district}",
+                    font=dict(family="Lato", size=12, color=text_color),
+                    showarrow=False,
+                )
+            )
         else:
             line_color = LIGHTGRAY
             text_color = GRAY
         fig.add_trace(
-            go.Scatter(x=df.index, y=df[district], line=dict(color=line_color, width=3))
+            go.Scatter(
+                x=df.index,
+                y=df[district],
+                line=dict(color=line_color, width=3),
+                text=district,
+            ),
+
         )
-        # Labels
-        annotations.append(
-            dict(
-                xref="paper",
-                x=1,
-                y=df.loc[36, district],
-                xanchor="left",
-                yanchor="middle",
-                text=f"{district}",
-                font=dict(family="Arial", size=12, color=text_color),
-                showarrow=False,
-            )
-        )
+        fig.update_traces(name="")
     fig.update_layout(
         xaxis=dict(
             showline=True,
