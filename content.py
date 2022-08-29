@@ -1,6 +1,6 @@
 intro = """This dashboard displays the estimated lifetime earnings for several school districts in Ventura County, CA."""
 
-analysis_text = """## Analysis\nChoose a district to focus on from the dropdown menu. Then choose the min number of units and degree type held by the teacher. Finally, you see how a proposed raise will impact salary. The differences in earnings across a 36 year career are computed and displayed below the graph."""
+analysis_text = """## Analysis\nChoose a district to focus on from the dropdown menu. Then choose the minimum number of units and degree type held by the teacher. Finally, you see how a proposed raise will impact salary. The differences in earnings across a 36 year career are computed and displayed below the graph."""
 
 explanation = """## Details
 
