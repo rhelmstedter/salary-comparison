@@ -338,7 +338,7 @@ def construct_bar_graph(
             ),
         ),
         xaxis2=dict(
-            title="Difference in Lifetime Earnings\nAdjusted for Health Premiums",
+            title="Difference in Lifetime Earnings<br>Adjusted for Health Premiums",
             zeroline=True,
             showline=False,
             showticklabels=True,
