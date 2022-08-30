@@ -1,8 +1,11 @@
 import pandas as pd
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 from dash import html
 
 TEAL = "#079A82"
+GREEN = "#0b7a75"
+RED = "rgba(171,74,67,0.6)"
 LIGHTGRAY = "#eeeeee"
 GRAY = "#aaaaaa"
 
@@ -207,19 +210,282 @@ def apply_proposed_raise(
 def calc_career_earnings(
     df: pd.DataFrame,
     districts: list[str],
-    focus: str,
 ) -> dict[str, int]:
     """Calculates the carreer earnings across each district.
 
     :df: The DataFrame used to calculate the career earnings
     :districts: the list of districts to include in the calculation.
-    :focus: The district to apply the raise to.
-    :raise_percent: The proposed raise stored as a float.
     :returns: A dictionary with keys of the district abbreviations and values of the
         carreer earnings.
     """
     return {district: int(df[district].sum()) for district in districts}
 
+
+def construct_bar_graph(
+    career_earnings: dict[str, int],
+    monthly_premiums: dict[str, int],
+    districts: list[str],
+    focus: str,
+    degree: str,
+    units: int,
+) -> go.Figure:
+    """Calculates and displays the differnces in earnings across a 36 year teaching career.
+
+    :career_earnings: A dictionary with keys containing the district abbreviations and
+        values of the career earnings for each district.
+    :districts: The list of districts to include in calculating the differences in earnings.
+    :focus: The district of focus. All other earnings are subtracted from this district.
+    :degree: The degree held by the teacher, either Bachelor's or Master's.
+    :units: The number of units obtained by the teacher.
+
+    :returns: None
+    """
+    career_premiums = {
+        district: (monthly * 12 * 36) for district, monthly in monthly_premiums.items()
+    }
+    sorted_career_earnings = dict(sorted(career_earnings.items(), key=lambda x: x[1]))
+    career_earnings_deltas = {
+        district: (
+            career_earnings[focus]
+            - career_premiums[focus]
+            - (career_earnings[district] - career_premiums[district]),
+            career_earnings[focus] - career_earnings[district],
+        )
+        for district in sorted_career_earnings.keys()
+    }
+    # Creating two subplots
+    fig = make_subplots(
+        rows=1,
+        cols=2,
+        specs=[[{}, {}]],
+        shared_xaxes=True,
+        shared_yaxes=False,
+        vertical_spacing=0.001,
+    )
+    colors = [
+        LIGHTGRAY,
+    ] * len(DISTRICTS)
+    focus_index = list(sorted_career_earnings.keys()).index(focus)
+    colors[focus_index] = TEAL
+    # lifetime earnings
+    fig.append_trace(
+        go.Bar(
+            x=list(sorted_career_earnings.values()),
+            y=list(sorted_career_earnings.keys()),
+            marker_color=colors,
+            name="",
+            orientation="h",
+            hovertemplate=[f"${x/1_000_000:.2f}M" for x in sorted_career_earnings.values()],
+        ),
+        1,
+        1,
+    )
+    # lifetime earnings deltas
+    fig.append_trace(
+        go.Bar(
+            x=[abs(delta[0] - delta[1]) for delta in career_earnings_deltas.values()],
+            y=list(sorted_career_earnings.keys()),
+            base=[delta[1] for delta in career_earnings_deltas.values()],
+            marker=dict(
+                color=TEAL,
+                line=dict(
+                    color=TEAL,
+                    width=1,
+                ),
+            ),
+            name="",
+            orientation="h",
+            hovertemplate=[
+                f"${x[0]/1000:.0f}k to ${x[1]/1000:.0f}k"
+                for x in career_earnings_deltas.values()
+            ],
+        ),
+        1,
+        2,
+    )
+    fig.update_layout(
+        yaxis=dict(
+            showgrid=False,
+            showline=False,
+            showticklabels=True,
+            domain=[0, 1],
+            tickfont=dict(
+                family="Lato",
+                size=12,
+                color="rgb(82, 82, 82)",
+            ),
+        ),
+        yaxis2=dict(
+            showgrid=False,
+            showline=True,
+            showticklabels=False,
+            linecolor="rgba(102, 102, 102, 0.8)",
+            linewidth=2,
+            domain=[0, 1],
+        ),
+        xaxis=dict(
+            title="Lifetime Earnings",
+            zeroline=False,
+            showline=False,
+            showticklabels=True,
+            tickprefix="$",
+            showgrid=True,
+            domain=[0, 0.45],
+            tickfont=dict(
+                family="Lato",
+                size=12,
+                color="rgb(82, 82, 82)",
+            ),
+        ),
+        xaxis2=dict(
+            title="Difference in Lifetime Earnings\nAdjusted for Health Premiums",
+            zeroline=True,
+            showline=False,
+            showticklabels=True,
+            tickprefix="$",
+            showgrid=True,
+            domain=[0.50, 1],
+            tickfont=dict(
+                family="Lato",
+                size=12,
+                color="rgb(82, 82, 82)",
+            ),
+        ),
+        autosize=True,
+        margin=dict(
+            autoexpand=False,
+            l=100,
+            r=100,
+            t=10,
+        ),
+        showlegend=False,
+        plot_bgcolor="white",
+    )
+    annotations = []
+    # # Title
+    # annotations.append(
+    #     dict(
+    #         xref="paper",
+    #         yref="paper",
+    #         x=0,
+    #         y=1,
+    #         xanchor="left",
+    #         yanchor="bottom",
+    #         text="Lifetime Earnings Compared by District",
+    #         font=dict(family="Lato", size=30, color="rgb(37,37,37)"),
+    #         showarrow=False,
+    #     )
+    # )
+    fig.update_layout(annotations=annotations)
+    return fig
+
+
+def construct_ploty_graph(
+    df: pd.DataFrame,
+    districts: list[str],
+    focus: str,
+    degree: str,
+    units: int,
+) -> go.Figure:
+    """Creates and displays the plot for the salary visualization.
+
+    :df: DataFrame that contains the salary for each district based on the parameters given.
+    :districts: The list of districts to include in the plot.
+    :focus: The district to highlight in on the chart.
+    :degree: The degree held by the teacher, either Bachelor's or Master's.
+    :units: The number of units obtained by the teacher.
+
+    :returns: None
+    """
+
+    fig = go.Figure()
+    annotations = []
+    for district in districts:
+        if district == focus:
+            line_color = TEAL
+            text_color = TEAL
+            # Labels
+            annotations.append(
+                dict(
+                    xref="paper",
+                    x=1,
+                    y=df.loc[36, district],
+                    xanchor="left",
+                    yanchor="middle",
+                    text=f"{district}",
+                    font=dict(family="Lato", size=12, color=text_color),
+                    showarrow=False,
+                )
+            )
+        else:
+            line_color = LIGHTGRAY
+            text_color = GRAY
+        fig.add_trace(
+            go.Scatter(
+                x=df.index,
+                y=df[district],
+                line=dict(color=line_color, width=3),
+                text=district,
+            ),
+        )
+        fig.update_traces(name="")
+    fig.update_layout(
+        xaxis=dict(
+            showline=True,
+            showgrid=False,
+            showticklabels=True,
+            linecolor="rgb(204, 204, 204)",
+            linewidth=2,
+            ticks="outside",
+            title="Years Teaching",
+            tickfont=dict(
+                family="Lato",
+                size=12,
+                color="rgb(82, 82, 82)",
+            ),
+        ),
+        yaxis=dict(
+            showgrid=False,
+            zeroline=False,
+            showline=True,
+            showticklabels=True,
+            linecolor="rgb(204, 204, 204)",
+            linewidth=2,
+            ticks="outside",
+            title="Annual Salary in Dollars",
+            tickprefix="$",
+            tickfont=dict(
+                family="Lato",
+                size=12,
+                color="rgb(82, 82, 82)",
+            ),
+        ),
+        autosize=True,
+        margin=dict(
+            autoexpand=False,
+            l=100,
+            r=100,
+            t=110,
+        ),
+        showlegend=False,
+        plot_bgcolor="white",
+    )
+    # Title
+    annotations.append(
+        dict(
+            xref="paper",
+            yref="paper",
+            x=0,
+            y=1.05,
+            xanchor="left",
+            yanchor="bottom",
+            text=f"{degree} Degree and {units} units",
+            font=dict(family="Lato", size=30, color="rgb(37,37,37)"),
+            showarrow=False,
+        )
+    )
+    fig.update_layout(annotations=annotations)
+    return fig
 
 def calc_career_diffs(
     career_earnings: dict[str, int],
@@ -292,111 +558,10 @@ def calc_career_diffs(
                 )
     return career_diffs
 
-
-def construct_ploty_graph(
-    df: pd.DataFrame,
-    districts: list[str],
-    focus: str,
-    degree: str,
-    units: int,
-) -> go.Figure:
-    """Creates and displays the plot for the salary visualization.
-
-    :df: DataFrame that contains the salary for each district based on the parameters given.
-    :districts: The list of districts to include in the plot.
-    :focus: The district to highlight in on the chart.
-    :degree: The degree held by the teacher, either Bachelor's or Master's.
-    :units: The number of units obtained by the teacher.
-
-    :returns: None
-    """
-
-    fig = go.Figure()
-    annotations = []
-    for district in districts:
-        if district == focus:
-            line_color = TEAL
-            text_color = TEAL
-            # Labels
-            annotations.append(
-                dict(
-                    xref="paper",
-                    x=1,
-                    y=df.loc[36, district],
-                    xanchor="left",
-                    yanchor="middle",
-                    text=f"{district}",
-                    font=dict(family="Lato", size=12, color=text_color),
-                    showarrow=False,
-                )
-            )
-        else:
-            line_color = LIGHTGRAY
-            text_color = GRAY
-        fig.add_trace(
-            go.Scatter(
-                x=df.index,
-                y=df[district],
-                line=dict(color=line_color, width=3),
-                text=district,
-            ),
-
-        )
-        fig.update_traces(name="")
-    fig.update_layout(
-        xaxis=dict(
-            showline=True,
-            showgrid=False,
-            showticklabels=True,
-            linecolor="rgb(204, 204, 204)",
-            linewidth=2,
-            ticks="outside",
-            title="Years Teaching",
-            tickfont=dict(
-                family="Lato",
-                size=12,
-                color="rgb(82, 82, 82)",
-            ),
-        ),
-        yaxis=dict(
-            showgrid=False,
-            zeroline=False,
-            showline=True,
-            showticklabels=True,
-            linecolor="rgb(204, 204, 204)",
-            linewidth=2,
-            ticks="outside",
-            title="Annual Salary in Dollars",
-            tickprefix="$",
-            tickfont=dict(
-                family="Lato",
-                size=12,
-                color="rgb(82, 82, 82)",
-            ),
-        ),
-        autosize=True,
-        margin=dict(
-            autoexpand=False,
-            l=100,
-            r=100,
-            t=110,
-        ),
-        showlegend=False,
-        plot_bgcolor="white",
+if __name__ == "__main__":
+    df, degree, units = SALARY_PARAMETERS["Master's and 60 units"]
+    career_earnings = calc_career_earnings(df, DISTRICTS, "VUSD")
+    fig = construct_bar_graph(
+        career_earnings, MONTHLY_PREMIUMS, DISTRICTS, "VUSD", degree, units
     )
-    # Title
-    annotations.append(
-        dict(
-            xref="paper",
-            yref="paper",
-            x=0,
-            y=1.05,
-            xanchor="left",
-            yanchor="bottom",
-            text=f"Salary with {degree} and {units} units",
-            font=dict(family="Lato", size=30, color="rgb(37,37,37)"),
-            showarrow=False,
-        )
-    )
-    fig.update_layout(annotations=annotations)
-    return fig
+    fig.show()

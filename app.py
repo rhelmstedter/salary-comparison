@@ -6,6 +6,7 @@ from salary_comparison import (
     calc_career_diffs,
     calc_career_earnings,
     construct_ploty_graph,
+    construct_bar_graph,
 )
 from salary_comparison import DISTRICTS, MONTHLY_PREMIUMS, SALARY_PARAMETERS
 from dash.dependencies import Input, Output
@@ -26,7 +27,9 @@ app.layout = html.Div(
     [
         html.Div(
             children=[
-                html.H1(children="Lifetime Earnings For Teachers", className="header-title"),
+                html.H1(
+                    children="Lifetime Earnings For Teachers", className="header-title"
+                ),
                 html.P(
                     children="The estimated lifetime earnings for teachers across school districts in Ventura County, CA.",
                     className="header-description",
@@ -78,9 +81,24 @@ app.layout = html.Div(
             className="menu",
         ),
         dcc.Graph(
-            id="fig1",
+            id="line_graph",
             figure=construct_ploty_graph(
                 SALARY_PARAMETERS["Master's and 60 units"][0],
+                DISTRICTS,
+                focus="VUSD",
+                degree="Master's",
+                units=60,
+            ),
+            className="card",
+        ),
+        dcc.Graph(
+            id="bar_graph",
+            figure=construct_bar_graph(
+                calc_career_earnings(
+                    SALARY_PARAMETERS["Master's and 60 units"][0],
+                    DISTRICTS,
+                ),
+                MONTHLY_PREMIUMS,
                 DISTRICTS,
                 focus="VUSD",
                 degree="Master's",
@@ -97,12 +115,12 @@ app.layout = html.Div(
 
 
 @app.callback(
-    Output("fig1", "figure"),
+    Output("line_graph", "figure"),
     Input("degree_and_units", "value"),
     Input("focus", "value"),
     Input("raise_percent", "value"),
 )
-def update_graph(degree_and_units, focus, raise_percent):
+def update_line_graph(degree_and_units, focus, raise_percent):
     (
         df,
         degree,
@@ -110,6 +128,28 @@ def update_graph(degree_and_units, focus, raise_percent):
     ) = SALARY_PARAMETERS[degree_and_units]
     df = apply_proposed_raise(df.copy(deep=True), focus, raise_percent)
     return construct_ploty_graph(df, DISTRICTS, focus, degree, units)
+
+
+@app.callback(
+    Output("bar_graph", "figure"),
+    Input("degree_and_units", "value"),
+    Input("focus", "value"),
+    Input("raise_percent", "value"),
+)
+def update_bar_graph(degree_and_units, focus, raise_percent):
+    (
+        df,
+        degree,
+        units,
+    ) = SALARY_PARAMETERS[degree_and_units]
+    df = apply_proposed_raise(df.copy(deep=True), focus, raise_percent)
+    career_earnings = calc_career_earnings(
+        df=df,
+        districts=DISTRICTS,
+    )
+    return construct_bar_graph(
+        career_earnings, MONTHLY_PREMIUMS, DISTRICTS, focus, degree, units
+    )
 
 
 @app.callback(
@@ -128,7 +168,6 @@ def update_output_div(degree_and_units, focus, raise_percent):
     career_earnings = calc_career_earnings(
         df=df,
         districts=DISTRICTS,
-        focus=focus,
     )
     return calc_career_diffs(
         career_earnings,
