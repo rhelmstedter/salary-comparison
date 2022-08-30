@@ -15,7 +15,7 @@ rio_df = pd.read_csv(
     index_col="step",
 )
 santa_paula_df = pd.read_csv(
-    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2020-2021-SantaPaula.csv",
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-SantaPaula.csv",
     index_col="step",
 )
 oxnard_union_df = pd.read_csv(
@@ -63,7 +63,7 @@ bachelors_30_units: pd.DataFrame = pd.concat(
         oxnard_elem_df["class 3"],
         pleasant_valley_df["class 3"],
         rio_df["class 2"],
-        santa_paula_df["class 3"],
+        santa_paula_df["class 2"],
         simi_valley_df["class 3"],
         ventura_df["class 2"],
     ],
@@ -93,7 +93,7 @@ bachelors_60_units: pd.DataFrame = pd.concat(
         oxnard_elem_df["class 5"],
         pleasant_valley_df["class 4"],
         rio_df["class 4"],
-        santa_paula_df["class 3"],
+        santa_paula_df["class 4"],
         simi_valley_df["class 5"],
         ventura_df["class 3"],
     ],
@@ -108,7 +108,7 @@ bachelors_75_units: pd.DataFrame = pd.concat(
         oxnard_elem_df["class 5"],
         pleasant_valley_df["class 4"],
         rio_df["class 4"],
-        santa_paula_df["class 3"],
+        santa_paula_df["class 5"],
         simi_valley_df["class 6"],
         ventura_df["class 4"],
     ],
