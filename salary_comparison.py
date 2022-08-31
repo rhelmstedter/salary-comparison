@@ -3,6 +3,8 @@ import plotly.graph_objects as go
 from dash import html
 
 TEAL = "#079A82"
+GREEN = "#0b7a75"
+RED = "rgba(171,74,67,0.6)"
 LIGHTGRAY = "#eeeeee"
 GRAY = "#aaaaaa"
 
@@ -207,29 +209,26 @@ def apply_proposed_raise(
 def calc_career_earnings(
     df: pd.DataFrame,
     districts: list[str],
-    focus: str,
 ) -> dict[str, int]:
     """Calculates the carreer earnings across each district.
 
     :df: The DataFrame used to calculate the career earnings
     :districts: the list of districts to include in the calculation.
-    :focus: The district to apply the raise to.
-    :raise_percent: The proposed raise stored as a float.
     :returns: A dictionary with keys of the district abbreviations and values of the
         carreer earnings.
     """
     return {district: int(df[district].sum()) for district in districts}
 
 
-def calc_career_diffs(
+def construct_bar_graph(
     career_earnings: dict[str, int],
     monthly_premiums: dict[str, int],
     districts: list[str],
     focus: str,
     degree: str,
     units: int,
-) -> list[html.P]:
-    """Calculates and displays the differnces in earnings across a 36 year teaching career.
+) -> go.Figure:
+    """Calculates and displays the differences in earnings across a 36 year teaching career.
 
     :career_earnings: A dictionary with keys containing the district abbreviations and
         values of the career earnings for each district.
@@ -240,57 +239,85 @@ def calc_career_diffs(
 
     :returns: None
     """
+    career_earnings = dict(sorted(career_earnings.items(), key=lambda x: x[1]))
     career_premiums = {
         district: (monthly * 12 * 36) for district, monthly in monthly_premiums.items()
     }
-    career_earnings_deltas = [
-        career_earnings[focus] - career_earnings[district] for district in districts
-    ]
-    career_earnings_deltas_insurance = [
-        (career_earnings[focus] - career_premiums[focus])
-        - (career_earnings[district] - career_premiums[district])
-        for district in districts
-    ]
-    career_diffs = []
-    career_diffs.append(
-        html.P(
-            f"""This analysis assumes a teacher starts with a {degree} degree with {units} units and remains in {focus} for a 36 year career.\nThe {focus} teacher makes:\n"""
+    career_earnings_deltas = {
+        district: (
+            (career_earnings[district] - career_premiums[district])
+            - (career_earnings[focus] - career_premiums[focus]),
+            career_earnings[district] - career_earnings[focus],
         )
-    )
-    for district, delta, insurance_delta in zip(
-        districts, career_earnings_deltas, career_earnings_deltas_insurance
-    ):
-        if district == focus:
-            continue
-        if insurance_delta < 0 and delta < 0:
-            if insurance_delta == delta:
-                career_diffs.append(
-                    html.P(f"🟥 ${abs(delta):,.0f} less than {district}.\n")
-                )
-            else:
-                career_diffs.append(
-                    html.P(
-                        f"🟥 ${abs(insurance_delta):,.0f} to ${abs(delta):,.0f} less than {district}.\n"
-                    )
-                )
-        elif insurance_delta >= 0 and delta <= 0:
-            career_diffs.append(
-                html.P(
-                    f"🟧 ${abs(delta):,.0f} less to ${abs(insurance_delta):,.0f} more than {district}.\n"
-                )
+        for district in career_earnings.keys()
+    }
+    hovertemplate = []
+    for delta in career_earnings_deltas.values():
+        if delta[0] == delta[1]:
+            hovertemplate.append(f"${delta[1]/1000:.0f}k difference with {focus}")
+        elif delta[1] < 0:
+            hovertemplate.append(
+                f"${delta[1]/1000:.0f}k to ${delta[0]/1000:.0f}k difference with {focus}"
             )
-        elif insurance_delta >= 0 and delta >= 0:
-            if insurance_delta == delta:
-                html.P(
-                    career_diffs.append(f"🟩 ${abs(delta):,.0f} more than {district}.\n")
-                )
-            else:
-                career_diffs.append(
-                    html.P(
-                        f"🟩 ${abs(delta):,.0f} to ${abs(insurance_delta):,.0f} more than {district}.\n"
-                    )
-                )
-    return career_diffs
+        else:
+            hovertemplate.append(
+                f"${delta[0]/1000:.0f}k to ${delta[1]/1000:.0f}k difference with {focus}"
+            )
+    colors = [
+        LIGHTGRAY,
+    ] * len(DISTRICTS)
+    focus_index = list(career_earnings.keys()).index(focus)
+    colors[focus_index] = TEAL
+    fig = go.Figure()
+    fig.add_trace(
+        go.Bar(
+            x=list(career_earnings.values()),
+            y=list(career_earnings.keys()),
+            marker_color=colors,
+            name="",
+            orientation="h",
+            hovertemplate=hovertemplate,
+        ),
+    )
+    fig.update_layout(
+        yaxis=dict(
+            title="District",
+            showgrid=False,
+            showline=False,
+            showticklabels=True,
+            domain=[0, 1],
+            tickfont=dict(
+                family="Lato",
+                size=12,
+                color="rgb(82, 82, 82)",
+            ),
+        ),
+        xaxis=dict(
+            title="Lifetime Earnings",
+            tickprefix="$",
+            tickfont=dict(
+                family="Lato",
+                size=12,
+                color="rgb(82, 82, 82)",
+            ),
+            showline=False,
+            showgrid=False,
+            showticklabels=True,
+            linecolor="rgb(204, 204, 204)",
+            linewidth=2,
+            ticks="outside",
+        ),
+        autosize=True,
+        margin=dict(
+            autoexpand=False,
+            l=100,
+            r=100,
+            t=10,
+        ),
+        showlegend=False,
+        plot_bgcolor="white",
+    )
+    return fig
 
 
 def construct_ploty_graph(
@@ -340,7 +367,6 @@ def construct_ploty_graph(
                 line=dict(color=line_color, width=3),
                 text=district,
             ),
-
         )
         fig.update_traces(name="")
     fig.update_layout(
@@ -390,13 +416,68 @@ def construct_ploty_graph(
             xref="paper",
             yref="paper",
             x=0,
-            y=1.05,
+            y=1.10,
             xanchor="left",
             yanchor="bottom",
-            text=f"Salary with {degree} and {units} units",
+            text=f"{degree} Degree and {units} units",
             font=dict(family="Lato", size=30, color="rgb(37,37,37)"),
             showarrow=False,
         )
     )
     fig.update_layout(annotations=annotations)
     return fig
+
+
+def calc_career_diffs(
+    career_earnings: dict[str, int],
+    monthly_premiums: dict[str, int],
+    districts: list[str],
+    focus: str,
+    degree: str,
+    units: int,
+) -> list[html.P]:
+    """Calculates and displays the differences in earnings across a 36 year teaching career.
+
+    :career_earnings: A dictionary with keys containing the district abbreviations and
+        values of the career earnings for each district.
+    :districts: The list of districts to include in calculating the differences in earnings.
+    :focus: The district of focus. All other earnings are subtracted from this district.
+    :degree: The degree held by the teacher, either Bachelor's or Master's.
+    :units: The number of units obtained by the teacher.
+
+    :returns: None
+    """
+    career_premiums = {
+        district: (monthly * 12 * 36) for district, monthly in monthly_premiums.items()
+    }
+    career_earnings_deltas = [
+        career_earnings[focus] - career_earnings[district] for district in districts
+    ]
+    career_earnings_deltas_insurance = [
+        (career_earnings[focus] - career_premiums[focus])
+        - (career_earnings[district] - career_premiums[district])
+        for district in districts
+    ]
+    career_diffs = []
+    career_diffs.append(
+        html.P(
+            f"""This analysis assumes a teacher starts with a {degree} degree with {units} units and remains in {focus} for a 36 year career."""
+        )
+    )
+    total_deltas = 0
+    for delta, insurance_delta in zip(career_earnings_deltas, career_earnings_deltas_insurance):
+        total_deltas += delta + insurance_delta
+    average_delta = total_deltas / (2 * len(districts))
+    career_diffs.append(
+        html.P(f"""Accounting for paying into health benefits, the {focus} teacher's lifetime earnings has an expected value of ${round(average_delta, -3):,.0f} compared to the other districts. To view the difference between each district, hover over the barchart.""")
+    )
+    return career_diffs
+
+
+if __name__ == "__main__":
+    df, degree, units = SALARY_PARAMETERS["Master's and 60 units"]
+    career_earnings = calc_career_earnings(df, DISTRICTS)
+    fig = construct_bar_graph(
+        career_earnings, MONTHLY_PREMIUMS, DISTRICTS, "VUSD", degree, units
+    )
+    fig.show()
