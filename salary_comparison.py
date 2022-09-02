@@ -44,6 +44,10 @@ simi_valley_df = pd.read_csv(
     "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-SimiValley.csv",
     index_col="step",
 )
+conejo_valley_df = pd.read_csv(
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-ConejoValley.csv",
+    index_col="step",
+)
 
 MONTHLY_PREMIUMS = {
     "HESD": 0,
@@ -55,6 +59,7 @@ MONTHLY_PREMIUMS = {
     "SPUSD": 250,
     "SVUSD": 250,
     "VUSD": 0,
+    "CVUSD": 160,
 }
 DISTRICTS = list(MONTHLY_PREMIUMS.keys())
 bachelors_30_units: pd.DataFrame = pd.concat(
@@ -68,6 +73,7 @@ bachelors_30_units: pd.DataFrame = pd.concat(
         santa_paula_df["class 2"],
         simi_valley_df["class 3"],
         ventura_df["class 2"],
+        conejo_valley_df["class 2"],
     ],
     axis=1,
     ignore_index=True,
@@ -83,6 +89,7 @@ bachelors_45_units: pd.DataFrame = pd.concat(
         santa_paula_df["class 3"],
         simi_valley_df["class 4"],
         ventura_df["class 3"],
+        conejo_valley_df["class 3"],
     ],
     axis=1,
     ignore_index=True,
@@ -98,6 +105,7 @@ bachelors_60_units: pd.DataFrame = pd.concat(
         santa_paula_df["class 4"],
         simi_valley_df["class 5"],
         ventura_df["class 3"],
+        conejo_valley_df["class 4"],
     ],
     axis=1,
     ignore_index=True,
@@ -113,6 +121,7 @@ bachelors_75_units: pd.DataFrame = pd.concat(
         santa_paula_df["class 5"],
         simi_valley_df["class 6"],
         ventura_df["class 4"],
+        conejo_valley_df["class 4"],
     ],
     axis=1,
     ignore_index=True,
@@ -128,6 +137,7 @@ masters_30_units: pd.DataFrame = pd.concat(
         santa_paula_df["class 5"],
         simi_valley_df["class 6"],
         ventura_df["class 3"],
+        conejo_valley_df["class 2"],
     ],
     axis=1,
     ignore_index=True,
@@ -143,6 +153,7 @@ masters_45_units: pd.DataFrame = pd.concat(
         santa_paula_df["class 5"],
         simi_valley_df["class 6"],
         ventura_df["class 3"],
+        conejo_valley_df["class 3"],
     ],
     axis=1,
     ignore_index=True,
@@ -158,6 +169,7 @@ masters_60_units: pd.DataFrame = pd.concat(
         santa_paula_df["class 5"],
         simi_valley_df["class 6"],
         ventura_df["class 4"],
+        conejo_valley_df["class 4"],
     ],
     axis=1,
     ignore_index=True,
@@ -173,6 +185,7 @@ masters_75_units: pd.DataFrame = pd.concat(
         santa_paula_df["class 5"],
         simi_valley_df["class 6"],
         ventura_df["class 5"],
+        conejo_valley_df["class 5"],
     ],
     axis=1,
     ignore_index=True,
