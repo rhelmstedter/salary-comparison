@@ -497,7 +497,7 @@ def calc_career_diffs(
     career_diffs = []
     career_diffs.append(
         html.P(
-            f"""This analysis assumes a teacher starts with a {degree} degree with {units} units and remains in {focus} for a 36 year career."""
+            f"""Assuming the teacher starts with a {degree} degree with {units} units and remains in {focus} for a 36 year career."""
         )
     )
     total_deltas = sum(
@@ -509,7 +509,12 @@ def calc_career_diffs(
     average_delta = total_deltas / (2 * len(districts))
     career_diffs.append(
         html.P(
-            f"""Accounting for paying into health benefits, the {focus} teacher's lifetime earnings has an expected value of ${round(average_delta, -3):,.0f} compared to the other districts. To view the difference between each district, hover over the barchart."""
+            f"""The teacher's lifetime earnings has an expected value of ${round(average_delta, -3):,.0f} compared to the other districts."""
+        )
+    )
+    career_diffs.append(
+        html.P(
+            """To view the difference between each district, hover over the barchart. The lower bound represents the difference if the teacher pays a 12 month premium. The upper bound represents the difference if the teacher opts out of benefits, or chooses a plan that is 100% funded by the respective district."""
         )
     )
     return career_diffs
