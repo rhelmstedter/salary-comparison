@@ -1,7 +1,7 @@
 intro = """This dashboard displays the estimated lifetime earnings for several school districts in Ventura County, CA."""
 
 analysis_text = """## Analysis
-Choose a district to focus on from the drop-down menu. Then choose the minimum number of units and degree type held by a teacher. Finally, choose a percentage for proposed raise to see how it will impact salary."""
+Choose a district to focus on from the drop-down menu and the minimum number of units and degree type held by a teacher. You can also select a proposed raise to see how it will impact salary."""
 
 explanation = """## Details
 
@@ -9,6 +9,7 @@ Currently the analysis includes the following schools:
 + Conejo Valley Unified School District (CVUSD)
 + Fillmore Unified School District (FUSD)
 + Hueneme Elementary School District (HESD)
++ Oak Park Unified School District (OPUSD)
 + Ocean View School District (OVSD)
 + Oxnard School District (OSD)
 + Oxnard Union High School District (OUHSD)
@@ -35,6 +36,7 @@ Due to the variation in benefits and qualifications for columns across districts
 | SVUSD    | 250             |
 | FUSD     | 300             |
 | OVSD     | 350             |
+| OPUSD    | 400             |
 
 The expected value of lifetime earnings is computed by calculating the average difference between the focus district and each other district (including both paying for and opting out of benefits) for a particular degree held and units earned by a teacher. A negative result indicates that a teacher earns that much less than teachers in other districts on average. A positive result indicates a teacher earns that much more on average.
 """
