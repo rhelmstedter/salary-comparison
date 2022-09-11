@@ -68,7 +68,11 @@ MONTHLY_PREMIUMS = {
     "FUSD": 300,
     "OPUSD": 400,
 }
+
 DISTRICTS = list(MONTHLY_PREMIUMS.keys())
+# PREMIUMS = list(MONTHLY_PREMIUMS.values())
+# premiums_df = pd.DataFrame({"District": DISTRICTS, "Monthly Premiums": PREMIUMS})
+
 bachelors_30_units: pd.DataFrame = pd.concat(
     [
         hueneme_df["class 3"],
@@ -497,7 +501,7 @@ def calc_career_diffs(
     career_diffs = []
     career_diffs.append(
         html.P(
-            f"""Assuming the teacher starts with a {degree} degree with {units} units and remains in {focus} for a 36 year career."""
+            f"""Assuming the teacher starts with a {degree} degree with {units} units and remains in {focus} for a 36 year career:"""
         )
     )
     total_deltas = sum(
@@ -509,12 +513,7 @@ def calc_career_diffs(
     average_delta = total_deltas / (2 * len(districts))
     career_diffs.append(
         html.P(
-            f"""The teacher's lifetime earnings has an expected value of ${round(average_delta, -3):,.0f} compared to the other districts."""
-        )
-    )
-    career_diffs.append(
-        html.P(
-            """To view the difference between each district, hover over the barchart. The lower bound represents the difference if the teacher pays a 12 month premium. The upper bound represents the difference if the teacher opts out of benefits, or chooses a plan that is 100% funded by the respective district."""
+            f"""Lifetime earnings for {focus} has an expected value of ${round(average_delta, -3):,.0f}."""
         )
     )
     return career_diffs

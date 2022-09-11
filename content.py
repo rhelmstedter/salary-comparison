@@ -1,9 +1,10 @@
+from salary_comparison import MONTHLY_PREMIUMS
+
 intro = """This dashboard displays the estimated lifetime earnings for several school districts in Ventura County, CA."""
 
-analysis_text = """## Analysis
-Choose a district to focus on from the drop-down menu and the minimum number of units and degree type held by a teacher. You can also select a proposed raise to see how it will impact salary."""
+analysis_text = """## Analysis"""
 
-explanation = """## Details
+details = """## Analysis Details
 
 Currently the analysis includes the following schools:
 + Conejo Valley Unified School District (CVUSD)
@@ -19,26 +20,27 @@ Currently the analysis includes the following schools:
 + Simi Valley Unified School District (SVUSD)
 + Ventura Unified School District (VUSD)
 
-Every district is up to date as of 09/02/22.
+Every district is up to date as of 09/11/22.
 
-Due to the variation in benefits and qualifications for columns across districts, it is difficult construct a direct comparison. It is possible for individual employees to pay more or less than the figures indicated in the table below. E.g., in this analysis, OUHSD monthly premiums are estimated at $180, but employees who choose Kaiser do not contribute a monthly premium. On the other hand, OVSD monthly premiums are estimated at $350, but employees have the ability to choose a plan that has a $1000 monthly premium. Based on what I could find through conversations with people from other districts and searching through district websites, I have estimated the cost of health benefits for each district as follows:
+Choosing a district to focus on from the drop-down menu highlights that district in the graphs and calculates the differences between all other distrcits. Choosing the minimum number of units and degree type held by a teacher changes the column used in the analysis according to the qualifications set by each district. Finally, you can select a proposed raise percentage to see how it will impact salary."""
 
-| District | Monthly Premium |
-| -------- | :-------------: |
-| HESD     | 0               |
-| VUSD     | 0               |
-| OSD      | 130             |
-| CVUSD    | 160             |
-| OUHSD    | 180             |
-| PVSD     | 200             |
-| RSD      | 200             |
-| SPUSD    | 250             |
-| SVUSD    | 250             |
-| FUSD     | 300             |
-| OVSD     | 350             |
-| OPUSD    | 400             |
+benefits = """### Accounting for Benefits
+
+Due to the variation in benefits across districts, it is difficult construct a direct comparison. It is possible for individual employees to pay more or less than the figures indicated in the table below. E.g., in this analysis, OUHSD monthly premiums are estimated at $180, but employees who choose Kaiser do not contribute a monthly premium. On the other hand, OVSD monthly premiums are estimated at $350, but employees have the ability to choose a plan that has a $1000 monthly premium. Based on what I could find through conversations with people from other districts and searching through district websites, I have estimated the cost of health benefits for each district and sorted them by cost as follows:
+"""
+
+benefits_table = """| District | Monthly Premium |
+| -------- | --------------: |
+"""
+sorted_premiums = dict(sorted(MONTHLY_PREMIUMS.items(), key=lambda d: d[1]))
+for district, premium in sorted_premiums.items():
+    benefits_table += f"|{district}|${premium}|\n"
+
+diff_calcs = """### Calculating Lifetime Earnings Differences
 
 The expected value of lifetime earnings is computed by calculating the average difference between the focus district and each other district (including both paying for and opting out of benefits) for a particular degree held and units earned by a teacher. A negative result indicates that a teacher earns that much less than teachers in other districts on average. A positive result indicates a teacher earns that much more on average.
+
+To view the difference between each district, hover over the barchart. The lower bound represents the difference if the teacher pays a 12 month premium. The upper bound represents the difference if the teacher opts out of benefits or chooses a plan that is 100% funded by the respective district.
 """
 
 outro = """## Notes

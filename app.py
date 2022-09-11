@@ -1,6 +1,7 @@
 import dash
 from dash import html, dcc
-from content import analysis_text, outro, explanation
+import content
+# from content import analysis_text, outro, explanation
 from salary_comparison import (
     apply_proposed_raise,
     calc_career_diffs,
@@ -37,8 +38,7 @@ app.layout = html.Div(
             ],
             className="header",
         ),
-        # html.Div(dcc.Markdown(intro, className="wrapper")),
-        html.Div(dcc.Markdown(analysis_text, className="wrapper")),
+        html.Div(dcc.Markdown(content.analysis_text, className="wrapper")),
         html.Div(
             [
                 html.Div(
@@ -107,8 +107,11 @@ app.layout = html.Div(
             className="card",
         ),
         html.Div(id="career_diffs", className="wrapper"),
-        html.Div(dcc.Markdown(explanation, className="wrapper")),
-        html.Div(dcc.Markdown(outro, className="wrapper")),
+        html.Div(dcc.Markdown(content.details, className="wrapper")),
+        html.Div(dcc.Markdown(content.benefits, className="wrapper")),
+        html.Div(dcc.Markdown(content.benefits_table, className="wrapper")),
+        html.Div(dcc.Markdown(content.diff_calcs, className="wrapper")),
+        html.Div(dcc.Markdown(content.outro, className="wrapper")),
     ],
     className="wrapper",
 )
