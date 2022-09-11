@@ -52,7 +52,6 @@ fillmore_df = pd.read_csv(
     "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-Fillmore.csv",
     index_col="step",
 )
-
 MONTHLY_PREMIUMS = {
     "HESD": 0,
     "OVSD": 350,
