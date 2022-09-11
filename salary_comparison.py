@@ -3,8 +3,6 @@ import plotly.graph_objects as go
 from dash import html
 
 TEAL = "#079A82"
-GREEN = "#0b7a75"
-RED = "rgba(171,74,67,0.6)"
 LIGHTGRAY = "#eeeeee"
 GRAY = "#aaaaaa"
 
@@ -52,6 +50,10 @@ fillmore_df = pd.read_csv(
     "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-Fillmore.csv",
     index_col="step",
 )
+oak_park_df = pd.read_csv(
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-OakPark.csv",
+    index_col="step",
+)
 MONTHLY_PREMIUMS = {
     "HESD": 0,
     "OVSD": 350,
@@ -64,6 +66,7 @@ MONTHLY_PREMIUMS = {
     "VUSD": 0,
     "CVUSD": 160,
     "FUSD": 300,
+    "OPUSD": 400,
 }
 DISTRICTS = list(MONTHLY_PREMIUMS.keys())
 bachelors_30_units: pd.DataFrame = pd.concat(
@@ -79,6 +82,7 @@ bachelors_30_units: pd.DataFrame = pd.concat(
         ventura_df["class 2"],
         conejo_valley_df["class 2"],
         fillmore_df["class 3"],
+        oak_park_df["class 2"],
     ],
     axis=1,
     ignore_index=True,
@@ -96,6 +100,7 @@ bachelors_45_units: pd.DataFrame = pd.concat(
         ventura_df["class 3"],
         conejo_valley_df["class 3"],
         fillmore_df["class 4"],
+        oak_park_df["class 3"],
     ],
     axis=1,
     ignore_index=True,
@@ -113,6 +118,7 @@ bachelors_60_units: pd.DataFrame = pd.concat(
         ventura_df["class 3"],
         conejo_valley_df["class 4"],
         fillmore_df["class 4"],
+        oak_park_df["class 4"],
     ],
     axis=1,
     ignore_index=True,
@@ -130,6 +136,7 @@ bachelors_75_units: pd.DataFrame = pd.concat(
         ventura_df["class 4"],
         conejo_valley_df["class 4"],
         fillmore_df["class 5"],
+        oak_park_df["class 5"],
     ],
     axis=1,
     ignore_index=True,
@@ -147,6 +154,7 @@ masters_30_units: pd.DataFrame = pd.concat(
         ventura_df["class 3"],
         conejo_valley_df["class 2"],
         fillmore_df["class 6"],
+        oak_park_df["class 3"],
     ],
     axis=1,
     ignore_index=True,
@@ -164,6 +172,7 @@ masters_45_units: pd.DataFrame = pd.concat(
         ventura_df["class 3"],
         conejo_valley_df["class 3"],
         fillmore_df["class 6"],
+        oak_park_df["class 4"],
     ],
     axis=1,
     ignore_index=True,
@@ -181,6 +190,7 @@ masters_60_units: pd.DataFrame = pd.concat(
         ventura_df["class 4"],
         conejo_valley_df["class 4"],
         fillmore_df["class 6"],
+        oak_park_df["class 5"],
     ],
     axis=1,
     ignore_index=True,
@@ -198,6 +208,7 @@ masters_75_units: pd.DataFrame = pd.concat(
         ventura_df["class 5"],
         conejo_valley_df["class 5"],
         fillmore_df["class 6"],
+        oak_park_df["class 5"],
     ],
     axis=1,
     ignore_index=True,
