@@ -6,16 +6,17 @@ Choose a district to focus on from the drop-down menu. Then choose the minimum n
 explanation = """## Details
 
 Currently the analysis includes the following schools:
++ Conejo Valley Unified School District (CVUSD)
++ Fillmore Unified School District (FUSD)
 + Hueneme Elementary School District (HESD)
 + Ocean View School District (OVSD)
-+ Oxnard Union High School District (OUHSD)
 + Oxnard School District (OSD)
++ Oxnard Union High School District (OUHSD)
 + Pleasant Valley School District (PVSD)
 + Rio School District (RSD)
 + Santa Paula Unified School District (SPUSD)
 + Simi Valley Unified School District (SVUSD)
 + Ventura Unified School District (VUSD)
-+ Conejo Valley Unified School District (CVUSD)
 
 Every district is up to date as of 09/02/22.
 
@@ -24,15 +25,16 @@ Due to the variation in benefits and qualifications for columns across districts
 | District | Monthly Premium |
 | -------- | :-------------: |
 | HESD     | 0               |
-| OVSD     | 350             |
-| OUHSD    | 180             |
+| VUSD     | 0               |
 | OSD      | 130             |
+| CVUSD    | 160             |
+| OUHSD    | 180             |
 | PVSD     | 200             |
 | RSD      | 200             |
 | SPUSD    | 250             |
 | SVUSD    | 250             |
-| VUSD     | 0               |
-| CVUSD    | 160             |
+| FUSD     | 300             |
+| OVSD     | 350             |
 
 The expected value of lifetime earnings is computed by calculating the average difference between the focus district and each other district (including both paying for and opting out of benefits) for a particular degree held and units earned by a teacher. A negative result indicates that a teacher earns that much less than teachers in other districts on average. A positive result indicates a teacher earns that much more on average.
 """
