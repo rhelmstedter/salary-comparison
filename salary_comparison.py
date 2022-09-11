@@ -48,6 +48,10 @@ conejo_valley_df = pd.read_csv(
     "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-ConejoValley.csv",
     index_col="step",
 )
+fillmore_df = pd.read_csv(
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-Fillmore.csv",
+    index_col="step",
+)
 
 MONTHLY_PREMIUMS = {
     "HESD": 0,
@@ -60,6 +64,7 @@ MONTHLY_PREMIUMS = {
     "SVUSD": 250,
     "VUSD": 0,
     "CVUSD": 160,
+    "FUSD": 300,
 }
 DISTRICTS = list(MONTHLY_PREMIUMS.keys())
 bachelors_30_units: pd.DataFrame = pd.concat(
@@ -74,6 +79,7 @@ bachelors_30_units: pd.DataFrame = pd.concat(
         simi_valley_df["class 3"],
         ventura_df["class 2"],
         conejo_valley_df["class 2"],
+        fillmore_df["class 3"],
     ],
     axis=1,
     ignore_index=True,
@@ -90,6 +96,7 @@ bachelors_45_units: pd.DataFrame = pd.concat(
         simi_valley_df["class 4"],
         ventura_df["class 3"],
         conejo_valley_df["class 3"],
+        fillmore_df["class 4"],
     ],
     axis=1,
     ignore_index=True,
@@ -106,6 +113,7 @@ bachelors_60_units: pd.DataFrame = pd.concat(
         simi_valley_df["class 5"],
         ventura_df["class 3"],
         conejo_valley_df["class 4"],
+        fillmore_df["class 4"],
     ],
     axis=1,
     ignore_index=True,
@@ -122,6 +130,7 @@ bachelors_75_units: pd.DataFrame = pd.concat(
         simi_valley_df["class 6"],
         ventura_df["class 4"],
         conejo_valley_df["class 4"],
+        fillmore_df["class 5"],
     ],
     axis=1,
     ignore_index=True,
@@ -138,6 +147,7 @@ masters_30_units: pd.DataFrame = pd.concat(
         simi_valley_df["class 6"],
         ventura_df["class 3"],
         conejo_valley_df["class 2"],
+        fillmore_df["class 6"],
     ],
     axis=1,
     ignore_index=True,
@@ -154,6 +164,7 @@ masters_45_units: pd.DataFrame = pd.concat(
         simi_valley_df["class 6"],
         ventura_df["class 3"],
         conejo_valley_df["class 3"],
+        fillmore_df["class 6"],
     ],
     axis=1,
     ignore_index=True,
@@ -170,6 +181,7 @@ masters_60_units: pd.DataFrame = pd.concat(
         simi_valley_df["class 6"],
         ventura_df["class 4"],
         conejo_valley_df["class 4"],
+        fillmore_df["class 6"],
     ],
     axis=1,
     ignore_index=True,
@@ -186,6 +198,7 @@ masters_75_units: pd.DataFrame = pd.concat(
         simi_valley_df["class 6"],
         ventura_df["class 5"],
         conejo_valley_df["class 5"],
+        fillmore_df["class 6"],
     ],
     axis=1,
     ignore_index=True,
@@ -477,12 +490,17 @@ def calc_career_diffs(
             f"""This analysis assumes a teacher starts with a {degree} degree with {units} units and remains in {focus} for a 36 year career."""
         )
     )
-    total_deltas = 0
-    for delta, insurance_delta in zip(career_earnings_deltas, career_earnings_deltas_insurance):
-        total_deltas += delta + insurance_delta
+    total_deltas = sum(
+        delta + insurance_delta
+        for delta, insurance_delta in zip(
+            career_earnings_deltas, career_earnings_deltas_insurance
+        )
+    )
     average_delta = total_deltas / (2 * len(districts))
     career_diffs.append(
-        html.P(f"""Accounting for paying into health benefits, the {focus} teacher's lifetime earnings has an expected value of ${round(average_delta, -3):,.0f} compared to the other districts. To view the difference between each district, hover over the barchart.""")
+        html.P(
+            f"""Accounting for paying into health benefits, the {focus} teacher's lifetime earnings has an expected value of ${round(average_delta, -3):,.0f} compared to the other districts. To view the difference between each district, hover over the barchart."""
+        )
     )
     return career_diffs
 
