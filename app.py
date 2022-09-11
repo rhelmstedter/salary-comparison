@@ -38,7 +38,6 @@ app.layout = html.Div(
             ],
             className="header",
         ),
-        html.Div(dcc.Markdown(content.analysis_text, className="wrapper")),
         html.Div(
             [
                 html.Div(
