@@ -68,7 +68,7 @@ app.layout = html.Div(
                 ),
                 html.Div(
                     [
-                        html.Div("Proposed Raise", className="menu-title"),
+                        html.Div("Proposed Raise Percent", className="menu-title"),
                         dcc.Dropdown(
                             id="raise_percent",
                             options=[{"label": i, "value": i} for i in range(25)],
