@@ -54,6 +54,10 @@ oak_park_df = pd.read_csv(
     "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-OakPark.csv",
     index_col="step",
 )
+moorpark_df = pd.read_csv(
+    "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-Moorpark.csv",
+    index_col="step",
+)
 MONTHLY_PREMIUMS = {
     "HESD": 0,
     "OVSD": 350,
@@ -67,11 +71,10 @@ MONTHLY_PREMIUMS = {
     "CVUSD": 160,
     "FUSD": 300,
     "OPUSD": 400,
+    "MUSD": 125,
 }
 
 DISTRICTS = list(MONTHLY_PREMIUMS.keys())
-# PREMIUMS = list(MONTHLY_PREMIUMS.values())
-# premiums_df = pd.DataFrame({"District": DISTRICTS, "Monthly Premiums": PREMIUMS})
 
 bachelors_30_units: pd.DataFrame = pd.concat(
     [
@@ -87,6 +90,7 @@ bachelors_30_units: pd.DataFrame = pd.concat(
         conejo_valley_df["class 2"],
         fillmore_df["class 3"],
         oak_park_df["class 2"],
+        moorpark_df["class 3"],
     ],
     axis=1,
     ignore_index=True,
@@ -105,6 +109,7 @@ bachelors_45_units: pd.DataFrame = pd.concat(
         conejo_valley_df["class 3"],
         fillmore_df["class 4"],
         oak_park_df["class 3"],
+        moorpark_df["class 4"],
     ],
     axis=1,
     ignore_index=True,
@@ -123,6 +128,7 @@ bachelors_60_units: pd.DataFrame = pd.concat(
         conejo_valley_df["class 4"],
         fillmore_df["class 4"],
         oak_park_df["class 4"],
+        moorpark_df["class 5"],
     ],
     axis=1,
     ignore_index=True,
@@ -141,6 +147,7 @@ bachelors_75_units: pd.DataFrame = pd.concat(
         conejo_valley_df["class 4"],
         fillmore_df["class 5"],
         oak_park_df["class 5"],
+        moorpark_df["class 5"],
     ],
     axis=1,
     ignore_index=True,
@@ -159,6 +166,7 @@ masters_30_units: pd.DataFrame = pd.concat(
         conejo_valley_df["class 2"],
         fillmore_df["class 6"],
         oak_park_df["class 3"],
+        moorpark_df["class 6"],
     ],
     axis=1,
     ignore_index=True,
@@ -177,6 +185,7 @@ masters_45_units: pd.DataFrame = pd.concat(
         conejo_valley_df["class 3"],
         fillmore_df["class 6"],
         oak_park_df["class 4"],
+        moorpark_df["class 6"],
     ],
     axis=1,
     ignore_index=True,
@@ -195,6 +204,7 @@ masters_60_units: pd.DataFrame = pd.concat(
         conejo_valley_df["class 4"],
         fillmore_df["class 6"],
         oak_park_df["class 5"],
+        moorpark_df["class 6"],
     ],
     axis=1,
     ignore_index=True,
@@ -213,6 +223,7 @@ masters_75_units: pd.DataFrame = pd.concat(
         conejo_valley_df["class 5"],
         fillmore_df["class 6"],
         oak_park_df["class 5"],
+        moorpark_df["class 6"],
     ],
     axis=1,
     ignore_index=True,
