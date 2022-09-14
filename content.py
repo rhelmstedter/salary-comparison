@@ -8,6 +8,7 @@ Currently the analysis includes the following schools:
 + Conejo Valley Unified School District (CVUSD)
 + Fillmore Unified School District (FUSD)
 + Hueneme Elementary School District (HESD)
++ Moorpark Unified School District (MUSD)
 + Oak Park Unified School District (OPUSD)
 + Ocean View School District (OVSD)
 + Oxnard School District (OSD)
