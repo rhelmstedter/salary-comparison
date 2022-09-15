@@ -4,7 +4,8 @@ intro = """This dashboard displays the estimated lifetime earnings for several s
 
 details = """## Analysis Details
 
-Currently the analysis includes the following schools:
+Currently the analysis includes all districts in Ventura County with at least 1,000 students.
+
 + Conejo Valley Unified School District (CVUSD)
 + Fillmore Unified School District (FUSD)
 + Hueneme Elementary School District (HESD)
@@ -19,7 +20,7 @@ Currently the analysis includes the following schools:
 + Simi Valley Unified School District (SVUSD)
 + Ventura Unified School District (VUSD)
 
-Every district is up to date as of 09/11/22.
+Every district is up to date as of 09/14/22.
 
 Choosing a district to focus on from the drop-down menu highlights that district in the graphs and calculates the differences between all other districts. Choosing the minimum number of units and degree type held by a teacher changes the column used in the analysis according to the qualifications set by each district. Finally, you can select a proposed raise percentage to see how it will impact salary."""
 
