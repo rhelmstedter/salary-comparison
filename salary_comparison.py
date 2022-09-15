@@ -10,35 +10,35 @@ GRAY = "#aaaaaa"
 
 
 def apply_proposed_raise(
-    df: pd.DataFrame,
+    salary_data: pd.DataFrame,
     focus: str,
     raise_percent: float,
 ) -> pd.DataFrame:
     """Apply a proposed raise to the district in focus.
 
-    :df: The dataframe that contains all the salary data.
+    :salary_data: The dataframe that contains all the salary data.
     :focus: The district to which the proposed raise will be applied.
     :raise_percent: The proposed raise as a percentage.
     """
-    df[focus] = df[focus] * (1 + raise_percent / 100)
-    return df
+    salary_data[focus] = salary_data[focus] * (1 + raise_percent / 100)
+    return salary_data
 
 
 def calc_career_earnings(
-    df: pd.DataFrame,
+    salary_data: pd.DataFrame,
     districts: list[str],
 ) -> dict[str, int]:
     """Calculates the carreer earnings across each district.
 
-    :df: The DataFrame used to calculate the career earnings
+    :salary_data: The DataFrame used to calculate the career earnings
     :districts: the list of districts to include in the calculation.
     :returns: A dictionary with keys of the district abbreviations and values of the
         carreer earnings.
     """
-    return {district: int(df[district].sum()) for district in districts}
+    return {district: int(salary_data[district].sum()) for district in districts}
 
 
-def construct_bar_graph(
+def construct_lifetime_earnings_graph(
     career_earnings: dict[str, int],
     monthly_premiums: dict[str, int],
     districts: list[str],
@@ -46,7 +46,8 @@ def construct_bar_graph(
     degree: str,
     units: int,
 ) -> go.Figure:
-    """Calculates and displays the differences in earnings across a 36 year teaching career.
+    """Constructs a horizontal barchart of lifetime earnings and displays the difference
+        between a district and the focus on hover.
 
     :career_earnings: A dictionary with keys containing the district abbreviations and
         values of the career earnings for each district.
@@ -55,7 +56,7 @@ def construct_bar_graph(
     :degree: The degree held by the teacher, either Bachelor's or Master's.
     :units: The number of units obtained by the teacher.
 
-    :returns: None
+    :returns: The plotly figure that contains the lifetime earnings barchart
     """
     career_earnings = dict(sorted(career_earnings.items(), key=lambda x: x[1]))
     career_premiums = {
@@ -138,22 +139,22 @@ def construct_bar_graph(
     return fig
 
 
-def construct_ploty_graph(
-    df: pd.DataFrame,
+def construct_annual_salary_graph(
+    salary_data: pd.DataFrame,
     districts: list[str],
     focus: str,
     degree: str,
     units: int,
 ) -> go.Figure:
-    """Creates and displays the plot for the salary visualization.
+    """Creates the line plot for the annual salary for all districts.
 
-    :df: DataFrame that contains the salary for each district based on the parameters given.
+    :salary_data: DataFrame that contains the salary scale for each district based on the parameters given.
     :districts: The list of districts to include in the plot.
     :focus: The district to highlight in on the chart.
     :degree: The degree held by the teacher, either Bachelor's or Master's.
     :units: The number of units obtained by the teacher.
 
-    :returns: None
+    :returns: The plotly figure that contains the annual salary vs years teaching
     """
 
     fig = go.Figure()
@@ -162,12 +163,12 @@ def construct_ploty_graph(
         if district == focus:
             line_color = TEAL
             text_color = TEAL
-            # Labels
+            # label focus district
             annotations.append(
                 dict(
                     xref="paper",
                     x=1,
-                    y=df.loc[36, district],
+                    y=salary_data.loc[36, district],
                     xanchor="left",
                     yanchor="middle",
                     text=f"{district}",
@@ -180,8 +181,8 @@ def construct_ploty_graph(
             text_color = GRAY
         fig.add_trace(
             go.Scatter(
-                x=df.index,
-                y=df[district],
+                x=salary_data.index,
+                y=salary_data[district],
                 line=dict(color=line_color, width=3),
                 text=district,
             ),
@@ -228,7 +229,7 @@ def construct_ploty_graph(
         showlegend=False,
         plot_bgcolor="white",
     )
-    # Title
+    # title
     annotations.append(
         dict(
             xref="paper",
@@ -254,7 +255,7 @@ def calc_career_diffs(
     degree: str,
     units: int,
 ) -> list[html.P]:
-    """Calculates and displays the differences in earnings across a 36 year teaching career.
+    """Calculates the differences in earnings across a 36 year teaching career.
 
     :career_earnings: A dictionary with keys containing the district abbreviations and
         values of the career earnings for each district.
@@ -300,7 +301,7 @@ def calc_career_diffs(
 if __name__ == "__main__":
     df, degree, units = SALARY_PARAMETERS["Master's and 60 units"]
     career_earnings = calc_career_earnings(df, DISTRICTS)
-    fig = construct_bar_graph(
+    fig = construct_lifetime_earnings_graph(
         career_earnings, MONTHLY_PREMIUMS, DISTRICTS, "VUSD", degree, units
     )
     fig.show()

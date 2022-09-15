@@ -8,8 +8,8 @@ from salary_comparison import (
     apply_proposed_raise,
     calc_career_diffs,
     calc_career_earnings,
-    construct_bar_graph,
-    construct_ploty_graph,
+    construct_lifetime_earnings_graph,
+    construct_annual_salary_graph,
 )
 
 districts = [{"label": district, "value": district} for district in DISTRICTS]
@@ -80,7 +80,7 @@ app.layout = html.Div(
         ),
         dcc.Graph(
             id="line_graph",
-            figure=construct_ploty_graph(
+            figure=construct_annual_salary_graph(
                 SALARY_PARAMETERS["Master's and 60 units"][0],
                 DISTRICTS,
                 focus="VUSD",
@@ -91,7 +91,7 @@ app.layout = html.Div(
         ),
         dcc.Graph(
             id="bar_graph",
-            figure=construct_bar_graph(
+            figure=construct_lifetime_earnings_graph(
                 calc_career_earnings(
                     SALARY_PARAMETERS["Master's and 60 units"][0],
                     DISTRICTS,
@@ -123,12 +123,14 @@ app.layout = html.Div(
 )
 def update_line_graph(degree_and_units, focus, raise_percent):
     (
-        df,
+        salary_data,
         degree,
         units,
     ) = SALARY_PARAMETERS[degree_and_units]
-    df = apply_proposed_raise(df.copy(deep=True), focus, raise_percent)
-    return construct_ploty_graph(df, DISTRICTS, focus, degree, units)
+    salary_data = apply_proposed_raise(
+        salary_data.copy(deep=True), focus, raise_percent
+    )
+    return construct_annual_salary_graph(salary_data, DISTRICTS, focus, degree, units)
 
 
 @app.callback(
@@ -139,16 +141,18 @@ def update_line_graph(degree_and_units, focus, raise_percent):
 )
 def update_bar_graph(degree_and_units, focus, raise_percent):
     (
-        df,
+        salary_data,
         degree,
         units,
     ) = SALARY_PARAMETERS[degree_and_units]
-    df = apply_proposed_raise(df.copy(deep=True), focus, raise_percent)
+    salary_data = apply_proposed_raise(
+        salary_data.copy(deep=True), focus, raise_percent
+    )
     career_earnings = calc_career_earnings(
-        df=df,
+        salary_data=salary_data,
         districts=DISTRICTS,
     )
-    return construct_bar_graph(
+    return construct_lifetime_earnings_graph(
         career_earnings, MONTHLY_PREMIUMS, DISTRICTS, focus, degree, units
     )
 
@@ -161,13 +165,15 @@ def update_bar_graph(degree_and_units, focus, raise_percent):
 )
 def update_output_div(degree_and_units, focus, raise_percent):
     (
-        df,
+        salary_data,
         degree,
         units,
     ) = SALARY_PARAMETERS[degree_and_units]
-    df = apply_proposed_raise(df.copy(deep=True), focus, raise_percent)
+    salary_data = apply_proposed_raise(
+        salary_data.copy(deep=True), focus, raise_percent
+    )
     career_earnings = calc_career_earnings(
-        df=df,
+        salary_data=salary_data,
         districts=DISTRICTS,
     )
     return calc_career_diffs(
