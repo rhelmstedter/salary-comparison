@@ -1,17 +1,16 @@
 import dash
-from dash import html, dcc
+from dash import dcc, html
+from dash.dependencies import Input, Output
+
 import content
-# from content import analysis_text, outro, explanation
+from districts_data import DISTRICTS, MONTHLY_PREMIUMS, SALARY_PARAMETERS
 from salary_comparison import (
     apply_proposed_raise,
     calc_career_diffs,
     calc_career_earnings,
-    construct_ploty_graph,
     construct_bar_graph,
+    construct_ploty_graph,
 )
-from salary_comparison import DISTRICTS, MONTHLY_PREMIUMS, SALARY_PARAMETERS
-from dash.dependencies import Input, Output
-
 
 districts = [{"label": district, "value": district} for district in DISTRICTS]
 external_stylesheets = [

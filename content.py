@@ -1,4 +1,4 @@
-from salary_comparison import MONTHLY_PREMIUMS
+from districts_data import MONTHLY_PREMIUMS
 
 intro = """This dashboard displays the estimated lifetime earnings for several school districts in Ventura County, CA."""
 
@@ -43,6 +43,6 @@ To view the difference between each district, hover over the barchart. The lower
 """
 
 outro = """## Sources and Corrections
-The goal of this page is to provide concrete data on salary diffences across districts in Ventura County. The analysis is the result of converting salary schedules from `pdfs` to `csv` files (some of which were required to be typed out by hand). While I have tried to be as accurate as possible in the analysis, it is possible that I have made mistakes when transcribing salaries or in the various calculations. If anyone notices a mistake or has more accurate salary/benefit data please contact me at rhelmstedter@gmail.com. I will do my best to correct it as soon a possible.
+The goal of this page is to provide concrete data on salary diffences across districts in Ventura County. The analysis is the result of converting salary schedules from PDF to CSV files (some of which were required to be typed out by hand). While I have tried to be as accurate as possible in the analysis, it is possible that I have made mistakes when transcribing salaries or in the various calculations. If anyone notices a mistake or has more accurate salary/benefit data please contact me at rhelmstedter@gmail.com. I will do my best to correct it as soon a possible.
 
 All of the salary schedules are publicly available in PDF form from the respective district websites. They can also be found in both PDF and CSV form on the [github repo](https://github.com/rhelmstedter/salary-comparison). The code, including all the calculations in salary difference and expected lifetime earnings, is written in Python and freely available in the [github repo](https://github.com/rhelmstedter/salary-comparison)."""
