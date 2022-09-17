@@ -22,6 +22,8 @@ Currently the analysis includes all districts in Ventura County with at least 1,
 
 Every district is up to date as of 09/14/22.
 
+SVUSD just agreed to an 11% increase. The pay scale has not been released on their website yet.
+
 Choosing a district to focus on from the drop-down menu highlights that district in the graphs and calculates the differences between all other districts. Choosing the minimum number of units and degree type held by a teacher changes the column used in the analysis according to the qualifications set by each district. Finally, you can select a proposed raise percentage to see how it will impact salary."""
 
 benefits = """### Accounting for Benefits

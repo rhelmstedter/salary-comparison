@@ -1,3 +1,4 @@
+from statistics import mean
 import pandas as pd
 import plotly.graph_objects as go
 from dash import html
@@ -28,7 +29,7 @@ def calc_career_earnings(
     salary_data: pd.DataFrame,
     districts: list[str],
 ) -> dict[str, int]:
-    """Calculates the carreer earnings across each district.
+    """Calculates the carreer earnings for each district.
 
     :salary_data: The DataFrame used to calculate the career earnings
     :districts: the list of districts to include in the calculation.
@@ -146,7 +147,7 @@ def construct_annual_salary_graph(
     degree: str,
     units: int,
 ) -> go.Figure:
-    """Creates the line plot for the annual salary for all districts.
+    """Creates the line plot of the annual salary for each district.
 
     :salary_data: DataFrame that contains the salary scale for each district based on the parameters given.
     :districts: The list of districts to include in the plot.
@@ -247,24 +248,25 @@ def construct_annual_salary_graph(
     return fig
 
 
-def calc_career_diffs(
+def calc_career_deltas(
     career_earnings: dict[str, int],
     monthly_premiums: dict[str, int],
     districts: list[str],
     focus: str,
-    degree: str,
-    units: int,
-) -> list[html.P]:
-    """Calculates the differences in earnings across a 36 year teaching career.
+) -> tuple[list]:
+    """Calculates the deltas in earnings across a 36 year teaching career accounting
+        monthly premiums.
 
     :career_earnings: A dictionary with keys containing the district abbreviations and
         values of the career earnings for each district.
-    :districts: The list of districts to include in calculating the differences in earnings.
+    :districts: A list of districts to include in calculating the deltas in earnings.
     :focus: The district of focus. All other earnings are subtracted from this district.
     :degree: The degree held by the teacher, either Bachelor's or Master's.
     :units: The number of units obtained by the teacher.
 
-    :returns: None
+    :returns: The lists of deltas between the focus district and the list of districts.
+        The first list accounts for opting out of insurance. The second list accounts
+        for opting into insurance.
     """
     career_premiums = {
         district: (monthly * 12 * 36) for district, monthly in monthly_premiums.items()
@@ -277,31 +279,89 @@ def calc_career_diffs(
         - (career_earnings[district] - career_premiums[district])
         for district in districts
     ]
-    career_diffs = []
-    career_diffs.append(
-        html.P(
-            f"""Assuming the teacher starts with a {degree} degree with {units} units and remains in {focus} for a 36 year career:"""
-        )
-    )
+    return career_earnings_deltas, career_earnings_deltas_insurance
+
+
+def calc_expected_value(
+    career_earnings_deltas: list,
+    career_earnings_deltas_insurance: list,
+) -> float:
+    """Calculates the expected value of a given district.
+
+    :career_earnings_deltas: The list of deltas when opting out of insurance.
+    :career_earnings_deltas_insurance: The list of deltas when opting in to insurance.
+
+    :returns: The expected value rounded to the thousands place.
+    """
     total_deltas = sum(
         delta + insurance_delta
         for delta, insurance_delta in zip(
             career_earnings_deltas, career_earnings_deltas_insurance
         )
     )
-    average_delta = total_deltas / (2 * len(districts))
-    career_diffs.append(
+    expected_value = total_deltas / (2 * len(career_earnings_deltas))
+    return round(expected_value, -3)
+
+
+def construct_analysis_content(
+    expected_value: float,
+    overall_expected_value: float,
+    focus: str,
+    degree: str,
+    units: int,
+) -> list[html.P]:
+    """Contructs the anaylsis content displayed under the graphs.
+
+    :expected_value: The expected value of an employee in the focus district.
+    :focus: The district of focus. All other earnings are subtracted from this district.
+    :degree: The degree held by the teacher, either Bachelor's or Master's.
+    :units: The number of units obtained by the teacher.
+
+    :returns: A list of html paragraphs that display the expected value.
+    """
+    analysis_content = []
+    analysis_content.append(
         html.P(
-            f"""Lifetime earnings for {focus} has an expected value of ${round(average_delta, -3):,.0f}."""
+            f"""Assuming the teacher remains in {focus} for a 36 year career:"""
         )
     )
-    return career_diffs
+    analysis_content.append(
+        html.P(
+            f"""Lifetime earnings with a {degree} degree with {units} units has an expected value of ${expected_value:,.0f}."""
+        )
+    )
+    analysis_content.append(
+        html.P(
+            f"Lifetime earnings across all degree types and units has an expected value of ${overall_expected_value:,.0f}"
+        )
+    )
+    return analysis_content
+
+
+def calc_overall_expected_value(
+    districts: list,
+    focus: str,
+    raise_percent: float,
+) -> float:
+    """Calculates the expected value across all degree types and unitsself.
+
+    :districts: A list of districts to include in calculating the deltas in earnings.
+    :focus: The district of focus.
+    :raise_percent: The proposed raise as a percentage.
+
+    :returns: The overall expected value rounded to the thousands place.
+    """
+    expected_values = []
+    for label, data in SALARY_PARAMETERS.items():
+        df, degree, units = data
+        df = apply_proposed_raise(df.copy(deep=True), focus, raise_percent)
+        career_earnings = calc_career_earnings(df, DISTRICTS)
+        deltas = calc_career_deltas(
+            career_earnings, MONTHLY_PREMIUMS, DISTRICTS, focus,
+        )
+        expected_values.append((label, calc_expected_value(deltas[0], deltas[1])))
+    return round(mean(item[1] for item in expected_values), -3)
 
 
 if __name__ == "__main__":
-    df, degree, units = SALARY_PARAMETERS["Master's and 60 units"]
-    career_earnings = calc_career_earnings(df, DISTRICTS)
-    fig = construct_lifetime_earnings_graph(
-        career_earnings, MONTHLY_PREMIUMS, DISTRICTS, "VUSD", degree, units
-    )
-    fig.show()
+    pass

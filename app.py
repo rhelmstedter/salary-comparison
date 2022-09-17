@@ -6,10 +6,13 @@ import content
 from districts_data import DISTRICTS, MONTHLY_PREMIUMS, SALARY_PARAMETERS
 from salary_comparison import (
     apply_proposed_raise,
-    calc_career_diffs,
+    calc_career_deltas,
     calc_career_earnings,
+    calc_expected_value,
+    calc_overall_expected_value,
     construct_lifetime_earnings_graph,
     construct_annual_salary_graph,
+    construct_analysis_content,
 )
 
 districts = [{"label": district, "value": district} for district in DISTRICTS]
@@ -149,11 +152,16 @@ def update_bar_graph(degree_and_units, focus, raise_percent):
         salary_data.copy(deep=True), focus, raise_percent
     )
     career_earnings = calc_career_earnings(
-        salary_data=salary_data,
-        districts=DISTRICTS,
+        salary_data,
+        DISTRICTS,
     )
     return construct_lifetime_earnings_graph(
-        career_earnings, MONTHLY_PREMIUMS, DISTRICTS, focus, degree, units
+        career_earnings,
+        MONTHLY_PREMIUMS,
+        DISTRICTS,
+        focus,
+        degree,
+        units,
     )
 
 
@@ -173,16 +181,30 @@ def update_output_div(degree_and_units, focus, raise_percent):
         salary_data.copy(deep=True), focus, raise_percent
     )
     career_earnings = calc_career_earnings(
-        salary_data=salary_data,
-        districts=DISTRICTS,
+        salary_data,
+        DISTRICTS,
     )
-    return calc_career_diffs(
+    career_earnings_deltas, career_earnings_deltas_insurance = calc_career_deltas(
         career_earnings,
-        monthly_premiums=MONTHLY_PREMIUMS,
-        districts=DISTRICTS,
-        focus=focus,
-        degree=degree,
-        units=units,
+        MONTHLY_PREMIUMS,
+        DISTRICTS,
+        focus,
+    )
+    expected_value = calc_expected_value(
+        career_earnings_deltas,
+        career_earnings_deltas_insurance,
+    )
+    overall_expected_value = calc_overall_expected_value(
+        DISTRICTS,
+        focus,
+        raise_percent,
+    )
+    return construct_analysis_content(
+        expected_value,
+        overall_expected_value,
+        focus,
+        degree,
+        units,
     )
 
 
