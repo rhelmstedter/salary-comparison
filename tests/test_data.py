@@ -79,7 +79,7 @@ def test_earnings_MA_75(district, expected):
     ],
 )
 def test_apply_raise(district, raise_percent, expected):
-    salary_data = SALARY_PARAMETERS["Bachelor's and 30 units"][0]
+    salary_data = SALARY_PARAMETERS["Bachelor's and 30 units"][0].copy(deep=True)
     earnings = apply_proposed_raise(salary_data, district, raise_percent)
     earnings = calc_career_earnings(salary_data, DISTRICTS)
     actual = earnings[district]
@@ -88,7 +88,7 @@ def test_apply_raise(district, raise_percent, expected):
 
 def test_overall_expected_value_small():
     actual = calc_overall_expected_value(["HESD", "VUSD"], "VUSD", 0)
-    expected = -682000
+    expected = -692000
     assert actual == expected
 
 

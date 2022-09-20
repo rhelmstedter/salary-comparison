@@ -1,4 +1,5 @@
 from statistics import mean
+
 import pandas as pd
 import plotly.graph_objects as go
 from dash import html
@@ -380,5 +381,4 @@ def calc_overall_expected_value(
 
 
 if __name__ == "__main__":
-    print(calc_overall_expected_value(DISTRICTS, "VUSD", 0))
     print(calc_overall_expected_value(["HESD", "VUSD"], "VUSD", 0))
