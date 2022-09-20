@@ -2,6 +2,17 @@ from districts_data import MONTHLY_PREMIUMS
 
 intro = """This dashboard displays the estimated lifetime earnings for several school districts in Ventura County, CA."""
 
+updates = """## Updates
+
+### 09/19/22
+
+While testing the analysis, I came across an error in the calculations of the expected value. I was including the focus district while taking the average. This has the effect of pulling the expected values closer to zero since a district compared to itself always has a delta of zero. Districts furthest away from the mean were affected the most. To offer a concrete example, VUSD's (incorrect) overall expected value was $-311,000. With the correction in place this decreased to $-337,000.
+
+### 09/17/22
+
+SVUSD just agreed to an 9% increase in pay plus an addition 4 professional development days. The pay scale has not been released on their website yet and is not yet included in this anaylsis.
+"""
+
 details = """## Analysis Details
 
 Currently the analysis includes all districts in Ventura County with at least 1,000 students.
@@ -21,8 +32,6 @@ Currently the analysis includes all districts in Ventura County with at least 1,
 + Ventura Unified School District (VUSD)
 
 Every district is up to date as of 09/14/22.
-
-SVUSD just agreed to an 11% increase. The pay scale has not been released on their website yet.
 
 Choosing a district to focus on from the drop-down menu highlights that district in the graphs and calculates the differences between all other districts. Choosing the minimum number of units and degree type held by a teacher changes the column used in the analysis according to the qualifications set by each district. Finally, you can select a proposed raise percentage to see how it will impact salary."""
 

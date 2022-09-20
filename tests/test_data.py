@@ -1,4 +1,4 @@
-from districts_data import SALARY_PARAMETERS, DISTRICTS, MONTHLY_PREMIUMS
+from districts_data import SALARY_PARAMETERS, DISTRICTS
 import salary_comparison
 import pytest
 
@@ -6,9 +6,9 @@ import pytest
 @pytest.mark.parametrize(
     "district, expected",
     [
-        ("VUSD", 2640309),
         ("CVUSD", 2832936),
         ("OUHSD", 3398180),
+        ("VUSD", 2640309),
     ],
 )
 def test_earnings_BA_30(district, expected):
@@ -34,6 +34,38 @@ def test_earnings_BA_45(district, expected):
 
 
 @pytest.mark.parametrize(
+    "district, expected",
+    [
+        ("HESD", 3721746),
+        ("PVSD", 3166386 + 500 * 36),
+        ("SPUSD", 3606832),
+    ],
+)
+def test_earnings_MA_60(district, expected):
+    salary_data = SALARY_PARAMETERS["Master's and 60 units"][0]
+    earnings = salary_comparison.calc_career_earnings(salary_data, DISTRICTS)
+    actual = earnings[district]
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    "district, expected",
+    [
+        ("RSD", 3463724),
+        ("FUSD", 3392456),
+        ("SVUSD", 3102034),
+        ("MUSD", 3088200),
+        ("VUSD", 3097190),
+    ],
+)
+def test_earnings_MA_75(district, expected):
+    salary_data = SALARY_PARAMETERS["Master's and 75 units"][0]
+    earnings = salary_comparison.calc_career_earnings(salary_data, DISTRICTS)
+    actual = earnings[district]
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
     "district, raise_percent, expected",
     [
         ("VUSD", 3, int(2640309 * 1.03)),
@@ -43,11 +75,21 @@ def test_earnings_BA_45(district, expected):
 )
 def test_apply_raise(district, raise_percent, expected):
     salary_data = SALARY_PARAMETERS["Bachelor's and 30 units"][0]
-    earnings = salary_comparison.apply_proposed_raise(salary_data, district, raise_percent)
+    earnings = salary_comparison.apply_proposed_raise(
+        salary_data, district, raise_percent
+    )
     earnings = salary_comparison.calc_career_earnings(salary_data, DISTRICTS)
     actual = earnings[district]
     assert actual == int(expected)
 
 
-# def test_overall_expected_value():
-#     salary_data = SALARY_PARAMETERS["Bachelor's and 30 units"][0]
+def test_overall_expected_value_small():
+    actual = salary_comparison.calc_overall_expected_value(["HESD", "VUSD"], "VUSD", 0)
+    expected = -682000
+    assert actual == expected
+
+
+def test_overall_expected_value_all():
+    actual = salary_comparison.calc_overall_expected_value()
+    expected = -337000
+    assert actual == expected

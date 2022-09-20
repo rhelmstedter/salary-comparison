@@ -253,6 +253,7 @@ def calc_career_deltas(
     monthly_premiums: dict[str, int],
     districts: list[str],
     focus: str,
+    include_focus: bool = True,
 ) -> tuple[list]:
     """Calculates the deltas in earnings across a 36 year teaching career accounting
         monthly premiums.
@@ -271,14 +272,27 @@ def calc_career_deltas(
     career_premiums = {
         district: (monthly * 12 * 36) for district, monthly in monthly_premiums.items()
     }
-    career_earnings_deltas = [
-        career_earnings[focus] - career_earnings[district] for district in districts
-    ]
-    career_earnings_deltas_insurance = [
-        (career_earnings[focus] - career_premiums[focus])
-        - (career_earnings[district] - career_premiums[district])
-        for district in districts
-    ]
+    if include_focus:
+        career_earnings_deltas = [
+            career_earnings[focus] - career_earnings[district] for district in districts
+        ]
+        career_earnings_deltas_insurance = [
+            (career_earnings[focus] - career_premiums[focus])
+            - (career_earnings[district] - career_premiums[district])
+            for district in districts
+        ]
+    else:
+        career_earnings_deltas = [
+            career_earnings[focus] - career_earnings[district]
+            for district in districts
+            if district != focus
+        ]
+        career_earnings_deltas_insurance = [
+            (career_earnings[focus] - career_premiums[focus])
+            - (career_earnings[district] - career_premiums[district])
+            for district in districts
+            if district != focus
+        ]
     return career_earnings_deltas, career_earnings_deltas_insurance
 
 
@@ -321,9 +335,7 @@ def construct_analysis_content(
     """
     analysis_content = []
     analysis_content.append(
-        html.P(
-            f"""Assuming the teacher remains in {focus} for a 36 year career:"""
-        )
+        html.P(f"""Assuming the teacher remains in {focus} for a 36 year career:""")
     )
     analysis_content.append(
         html.P(
@@ -339,9 +351,9 @@ def construct_analysis_content(
 
 
 def calc_overall_expected_value(
-    districts: list,
-    focus: str,
-    raise_percent: float,
+    districts: list = DISTRICTS,
+    focus: str = "VUSD",
+    raise_percent: float = 0,
 ) -> float:
     """Calculates the expected value across all degree types and unitsself.
 
@@ -355,13 +367,18 @@ def calc_overall_expected_value(
     for label, data in SALARY_PARAMETERS.items():
         df, degree, units = data
         df = apply_proposed_raise(df.copy(deep=True), focus, raise_percent)
-        career_earnings = calc_career_earnings(df, DISTRICTS)
+        career_earnings = calc_career_earnings(df, districts)
         deltas = calc_career_deltas(
-            career_earnings, MONTHLY_PREMIUMS, DISTRICTS, focus,
+            career_earnings,
+            MONTHLY_PREMIUMS,
+            districts,
+            focus,
+            False,
         )
         expected_values.append((label, calc_expected_value(deltas[0], deltas[1])))
     return round(mean(item[1] for item in expected_values), -3)
 
 
 if __name__ == "__main__":
-    pass
+    print(calc_overall_expected_value(DISTRICTS, "VUSD", 0))
+    print(calc_overall_expected_value(["HESD", "VUSD"], "VUSD", 0))

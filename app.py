@@ -108,6 +108,7 @@ app.layout = html.Div(
             className="card",
         ),
         html.Div(id="career_diffs", className="wrapper"),
+        html.Div(dcc.Markdown(content.updates, className="wrapper")),
         html.Div(dcc.Markdown(content.details, className="wrapper")),
         html.Div(dcc.Markdown(content.benefits, className="wrapper")),
         html.Div(dcc.Markdown(content.benefits_table, className="wrapper")),
@@ -189,6 +190,7 @@ def update_output_div(degree_and_units, focus, raise_percent):
         MONTHLY_PREMIUMS,
         DISTRICTS,
         focus,
+        False,
     )
     expected_value = calc_expected_value(
         career_earnings_deltas,
