@@ -1,6 +1,11 @@
-from districts_data import SALARY_PARAMETERS, DISTRICTS
-import salary_comparison
 import pytest
+
+from districts_data import DISTRICTS, SALARY_PARAMETERS
+from salary_comparison import (
+    apply_proposed_raise,
+    calc_career_earnings,
+    calc_overall_expected_value,
+)
 
 
 @pytest.mark.parametrize(
@@ -13,7 +18,7 @@ import pytest
 )
 def test_earnings_BA_30(district, expected):
     salary_data = SALARY_PARAMETERS["Bachelor's and 30 units"][0]
-    earnings = salary_comparison.calc_career_earnings(salary_data, DISTRICTS)
+    earnings = calc_career_earnings(salary_data, DISTRICTS)
     actual = earnings[district]
     assert actual == expected
 
@@ -28,7 +33,7 @@ def test_earnings_BA_30(district, expected):
 )
 def test_earnings_BA_45(district, expected):
     salary_data = SALARY_PARAMETERS["Bachelor's and 45 units"][0]
-    earnings = salary_comparison.calc_career_earnings(salary_data, DISTRICTS)
+    earnings = calc_career_earnings(salary_data, DISTRICTS)
     actual = earnings[district]
     assert actual == expected
 
@@ -43,7 +48,7 @@ def test_earnings_BA_45(district, expected):
 )
 def test_earnings_MA_60(district, expected):
     salary_data = SALARY_PARAMETERS["Master's and 60 units"][0]
-    earnings = salary_comparison.calc_career_earnings(salary_data, DISTRICTS)
+    earnings = calc_career_earnings(salary_data, DISTRICTS)
     actual = earnings[district]
     assert actual == expected
 
@@ -60,7 +65,7 @@ def test_earnings_MA_60(district, expected):
 )
 def test_earnings_MA_75(district, expected):
     salary_data = SALARY_PARAMETERS["Master's and 75 units"][0]
-    earnings = salary_comparison.calc_career_earnings(salary_data, DISTRICTS)
+    earnings = calc_career_earnings(salary_data, DISTRICTS)
     actual = earnings[district]
     assert actual == expected
 
@@ -75,21 +80,19 @@ def test_earnings_MA_75(district, expected):
 )
 def test_apply_raise(district, raise_percent, expected):
     salary_data = SALARY_PARAMETERS["Bachelor's and 30 units"][0]
-    earnings = salary_comparison.apply_proposed_raise(
-        salary_data, district, raise_percent
-    )
-    earnings = salary_comparison.calc_career_earnings(salary_data, DISTRICTS)
+    earnings = apply_proposed_raise(salary_data, district, raise_percent)
+    earnings = calc_career_earnings(salary_data, DISTRICTS)
     actual = earnings[district]
     assert actual == int(expected)
 
 
 def test_overall_expected_value_small():
-    actual = salary_comparison.calc_overall_expected_value(["HESD", "VUSD"], "VUSD", 0)
+    actual = calc_overall_expected_value(["HESD", "VUSD"], "VUSD", 0)
     expected = -682000
     assert actual == expected
 
 
 def test_overall_expected_value_all():
-    actual = salary_comparison.calc_overall_expected_value()
+    actual = calc_overall_expected_value()
     expected = -337000
     assert actual == expected
