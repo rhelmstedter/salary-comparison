@@ -5,7 +5,26 @@ from salary_comparison import (
     apply_proposed_raise,
     calc_career_earnings,
     calc_overall_expected_value,
+    calc_career_deltas,
+    calc_expected_value,
 )
+
+
+TEST_EARNINGS = {
+    "dist1": 1_000_000,
+    "dist2": 2_000_000,
+    "dist3": 3_000_000,
+}
+TEST_SAME_MONTHLY_PREMIUMS = {
+    "dist1": 10,
+    "dist2": 10,
+    "dist3": 10,
+}
+TEST_DIFFERENT_MONTHLY_PREMIUMS = {
+    "dist1": 10,
+    "dist2": 0,
+    "dist3": 100,
+}
 
 
 @pytest.mark.parametrize(
@@ -79,20 +98,64 @@ def test_earnings_MA_75(district, expected):
     ],
 )
 def test_apply_raise(district, raise_percent, expected):
-    salary_data = SALARY_PARAMETERS["Bachelor's and 30 units"][0].copy(deep=True)
-    earnings = apply_proposed_raise(salary_data, district, raise_percent)
+    salary_data = SALARY_PARAMETERS["Bachelor's and 30 units"][0]
+    salary_data = apply_proposed_raise(salary_data, district, raise_percent)
     earnings = calc_career_earnings(salary_data, DISTRICTS)
     actual = earnings[district]
     assert actual == int(expected)
 
 
-def test_overall_expected_value_small():
-    actual = calc_overall_expected_value(["HESD", "VUSD"], "VUSD", 0)
-    expected = -692000
+@pytest.mark.parametrize(
+    "deltas, insurance_deltas, expected",
+    [
+        ([20_000, 30_000, 50_000], [10_000, 20_000, 70_000], 33_333),
+        ([1_000_000, -1_000_000], [1_000_000, -1_000_000], 0),
+        ([-1_000_000, -1_000_000], [-1_000_000, -1_000_000], -1_000_000),
+    ],
+)
+def test_expected_value(deltas, insurance_deltas, expected):
+    actual = calc_expected_value(deltas, insurance_deltas)
     assert actual == expected
 
 
-def test_overall_expected_value_all():
+def test_overall_expected_value_small():
+    actual = calc_overall_expected_value(["HESD", "VUSD"], "VUSD", 0)
+    expected = -691792
+    assert actual == expected
+
+
+def test_overall_expected_value():
     actual = calc_overall_expected_value()
-    expected = -337000
+    expected = -336719
+    assert actual == expected
+
+
+def test_career_deltas_with_focus():
+    actual = calc_career_deltas(
+        TEST_EARNINGS,
+        TEST_SAME_MONTHLY_PREMIUMS,
+        "dist2",
+    )
+    expected = ([1_000_000, 0, -1_000_000], [1_000_000, 0, -1_000_000])
+    assert actual == expected
+
+
+def test_career_deltas_no_focus():
+    actual = calc_career_deltas(
+        TEST_EARNINGS,
+        TEST_SAME_MONTHLY_PREMIUMS,
+        "dist3",
+        False,
+    )
+    expected = ([2_000_000, 1_000_000], [2_000_000, 1_000_000])
+    assert actual == expected
+
+
+def test_career_deltas_different_premiums():
+    actual = calc_career_deltas(
+        TEST_EARNINGS,
+        TEST_DIFFERENT_MONTHLY_PREMIUMS,
+        "dist1",
+    )
+    expected = ([0, -1_000_000, -2_000_000], [0, -1_004_320, -1_961_120])
     assert actual == expected
