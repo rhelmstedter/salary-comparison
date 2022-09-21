@@ -22,6 +22,7 @@ def apply_proposed_raise(
     :focus: The district to which the proposed raise will be applied.
     :raise_percent: The proposed raise as a percentage.
     """
+    salary_data = salary_data.copy(deep=True)
     salary_data[focus] = salary_data[focus] * (1 + raise_percent / 100)
     return salary_data
 
@@ -61,28 +62,24 @@ def construct_lifetime_earnings_graph(
     :returns: The plotly figure that contains the lifetime earnings barchart
     """
     career_earnings = dict(sorted(career_earnings.items(), key=lambda x: x[1]))
-    career_premiums = {
-        district: (monthly * 12 * 36) for district, monthly in monthly_premiums.items()
-    }
-    career_earnings_deltas = {
-        district: (
-            (career_earnings[district] - career_premiums[district])
-            - (career_earnings[focus] - career_premiums[focus]),
-            career_earnings[district] - career_earnings[focus],
-        )
-        for district in career_earnings.keys()
-    }
+    districts = list(career_earnings.keys())
+    career_earnings_deltas = calc_career_deltas(
+        career_earnings,
+        monthly_premiums,
+        districts,
+        focus,
+    )
     hovertemplate = []
-    for delta in career_earnings_deltas.values():
+    for delta in zip(career_earnings_deltas[0], career_earnings_deltas[1]):
         if delta[0] == delta[1]:
-            hovertemplate.append(f"${delta[1]/1000:.0f}k difference with {focus}")
-        elif delta[1] < 0:
+            hovertemplate.append(f"${-1*delta[1]/1000:.0f}k difference with {focus}")
+        elif delta[0] > 0:
             hovertemplate.append(
-                f"${delta[1]/1000:.0f}k to ${delta[0]/1000:.0f}k difference with {focus}"
+                f"${-1*delta[1]/1000:.0f}k to ${-1*delta[0]/1000:.0f}k difference with {focus}"
             )
         else:
             hovertemplate.append(
-                f"${delta[0]/1000:.0f}k to ${delta[1]/1000:.0f}k difference with {focus}"
+                f"${-1*delta[0]/1000:.0f}k to ${-1*delta[1]/1000:.0f}k difference with {focus}"
             )
     colors = [
         LIGHTGRAY,
