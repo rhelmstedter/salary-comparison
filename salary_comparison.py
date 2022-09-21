@@ -43,8 +43,6 @@ def calc_career_earnings(
 
 def construct_lifetime_earnings_graph(
     career_earnings: dict[str, int],
-    monthly_premiums: dict[str, int],
-    districts: list[str],
     focus: str,
     degree: str,
     units: int,
@@ -54,43 +52,42 @@ def construct_lifetime_earnings_graph(
 
     :career_earnings: A dictionary with keys containing the district abbreviations and
         values of the career earnings for each district.
-    :districts: The list of districts to include in calculating the differences in earnings.
     :focus: The district of focus. All other earnings are subtracted from this district.
     :degree: The degree held by the teacher, either Bachelor's or Master's.
     :units: The number of units obtained by the teacher.
 
     :returns: The plotly figure that contains the lifetime earnings barchart
     """
-    career_earnings = dict(sorted(career_earnings.items(), key=lambda x: x[1]))
-    districts = list(career_earnings.keys())
+    sorted_career_earnings = dict(sorted(career_earnings.items(), key=lambda x: x[1]))
+    districts = list(sorted_career_earnings.keys())
     career_earnings_deltas = calc_career_deltas(
-        career_earnings,
-        monthly_premiums,
-        districts,
+        sorted_career_earnings,
+        MONTHLY_PREMIUMS,
         focus,
+        True,
     )
     hovertemplate = []
     for delta in zip(career_earnings_deltas[0], career_earnings_deltas[1]):
         if delta[0] == delta[1]:
             hovertemplate.append(f"${-1*delta[1]/1000:.0f}k difference with {focus}")
-        elif delta[0] > 0:
+        elif delta[1] > 0:
             hovertemplate.append(
                 f"${-1*delta[1]/1000:.0f}k to ${-1*delta[0]/1000:.0f}k difference with {focus}"
             )
         else:
             hovertemplate.append(
-                f"${-1*delta[0]/1000:.0f}k to ${-1*delta[1]/1000:.0f}k difference with {focus}"
+                f"${-1*delta[1]/1000:.0f}k to ${-1*delta[0]/1000:.0f}k difference with {focus}"
             )
     colors = [
         LIGHTGRAY,
     ] * len(DISTRICTS)
-    focus_index = list(career_earnings.keys()).index(focus)
+    focus_index = list(sorted_career_earnings.keys()).index(focus)
     colors[focus_index] = TEAL
     fig = go.Figure()
     fig.add_trace(
         go.Bar(
-            x=list(career_earnings.values()),
-            y=list(career_earnings.keys()),
+            x=list(sorted_career_earnings.values()),
+            y=list(sorted_career_earnings.keys()),
             marker_color=colors,
             name="",
             orientation="h",
@@ -249,7 +246,6 @@ def construct_annual_salary_graph(
 def calc_career_deltas(
     career_earnings: dict[str, int],
     monthly_premiums: dict[str, int],
-    districts: list[str],
     focus: str,
     include_focus: bool = True,
 ) -> tuple[list]:
@@ -258,7 +254,6 @@ def calc_career_deltas(
 
     :career_earnings: A dictionary with keys containing the district abbreviations and
         values of the career earnings for each district.
-    :districts: A list of districts to include in calculating the deltas in earnings.
     :focus: The district of focus. All other earnings are subtracted from this district.
     :degree: The degree held by the teacher, either Bachelor's or Master's.
     :units: The number of units obtained by the teacher.
@@ -267,6 +262,7 @@ def calc_career_deltas(
         The first list accounts for opting out of insurance. The second list accounts
         for opting into insurance.
     """
+    districts = career_earnings.keys()
     career_premiums = {
         district: (monthly * 12 * 36) for district, monthly in monthly_premiums.items()
     }
@@ -312,7 +308,7 @@ def calc_expected_value(
         )
     )
     expected_value = total_deltas / (2 * len(career_earnings_deltas))
-    return round(expected_value, -3)
+    return int(expected_value)
 
 
 def construct_analysis_content(
@@ -337,12 +333,12 @@ def construct_analysis_content(
     )
     analysis_content.append(
         html.P(
-            f"""Lifetime earnings with a {degree} degree with {units} units has an expected value of ${expected_value:,.0f}."""
+            f"""Lifetime earnings with a {degree} degree with {units} units has an expected value of ${round(expected_value,-3):,.0f}."""
         )
     )
     analysis_content.append(
         html.P(
-            f"Lifetime earnings across all degree types and units has an expected value of ${overall_expected_value:,.0f}"
+            f"Lifetime earnings across all degree types and units has an expected value of ${round(overall_expected_value, -3):,.0f}."
         )
     )
     return analysis_content
@@ -362,20 +358,20 @@ def calc_overall_expected_value(
     :returns: The overall expected value rounded to the thousands place.
     """
     expected_values = []
-    for label, data in SALARY_PARAMETERS.items():
+    for _, data in SALARY_PARAMETERS.items():
         df, degree, units = data
         df = apply_proposed_raise(df.copy(deep=True), focus, raise_percent)
         career_earnings = calc_career_earnings(df, districts)
         deltas = calc_career_deltas(
             career_earnings,
             MONTHLY_PREMIUMS,
-            districts,
             focus,
             False,
         )
-        expected_values.append((label, calc_expected_value(deltas[0], deltas[1])))
-    return round(mean(item[1] for item in expected_values), -3)
+        expected_values.append((calc_expected_value(deltas[0], deltas[1])))
+    return int(mean(item for item in expected_values))
 
 
 if __name__ == "__main__":
     print(calc_overall_expected_value(["HESD", "VUSD"], "VUSD", 0))
+    print(calc_overall_expected_value())

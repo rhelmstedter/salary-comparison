@@ -15,7 +15,7 @@ from salary_comparison import (
     construct_analysis_content,
 )
 
-districts = [{"label": district, "value": district} for district in DISTRICTS]
+districts = [{"label": district, "value": district} for district in sorted(DISTRICTS)]
 external_stylesheets = [
     {
         "href": "https://fonts.googleapis.com/css2?"
@@ -99,8 +99,6 @@ app.layout = html.Div(
                     SALARY_PARAMETERS["Master's and 60 units"][0],
                     DISTRICTS,
                 ),
-                MONTHLY_PREMIUMS,
-                DISTRICTS,
                 focus="VUSD",
                 degree="Master's",
                 units=60,
@@ -132,7 +130,7 @@ def update_line_graph(degree_and_units, focus, raise_percent):
         units,
     ) = SALARY_PARAMETERS[degree_and_units]
     salary_data = apply_proposed_raise(
-        salary_data.copy(deep=True), focus, raise_percent
+        salary_data, focus, raise_percent
     )
     return construct_annual_salary_graph(salary_data, DISTRICTS, focus, degree, units)
 
@@ -150,7 +148,7 @@ def update_bar_graph(degree_and_units, focus, raise_percent):
         units,
     ) = SALARY_PARAMETERS[degree_and_units]
     salary_data = apply_proposed_raise(
-        salary_data.copy(deep=True), focus, raise_percent
+        salary_data, focus, raise_percent
     )
     career_earnings = calc_career_earnings(
         salary_data,
@@ -158,8 +156,6 @@ def update_bar_graph(degree_and_units, focus, raise_percent):
     )
     return construct_lifetime_earnings_graph(
         career_earnings,
-        MONTHLY_PREMIUMS,
-        DISTRICTS,
         focus,
         degree,
         units,
@@ -179,7 +175,7 @@ def update_output_div(degree_and_units, focus, raise_percent):
         units,
     ) = SALARY_PARAMETERS[degree_and_units]
     salary_data = apply_proposed_raise(
-        salary_data.copy(deep=True), focus, raise_percent
+        salary_data, focus, raise_percent
     )
     career_earnings = calc_career_earnings(
         salary_data,
@@ -188,7 +184,6 @@ def update_output_div(degree_and_units, focus, raise_percent):
     career_earnings_deltas, career_earnings_deltas_insurance = calc_career_deltas(
         career_earnings,
         MONTHLY_PREMIUMS,
-        DISTRICTS,
         focus,
         False,
     )
