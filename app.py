@@ -72,7 +72,7 @@ app.layout = html.Div(
                         html.Div("Proposed Raise Percent", className="menu-title"),
                         dcc.Dropdown(
                             id="raise_percent",
-                            options=[{"label": i, "value": i} for i in range(25)],
+                            options=[{"label": f"{i}%", "value": i} for i in range(25)],
                             value=0,
                             className="Dropdown",
                         ),
@@ -84,8 +84,7 @@ app.layout = html.Div(
         dcc.Graph(
             id="line_graph",
             figure=construct_annual_salary_graph(
-                SALARY_PARAMETERS["Master's and 60 units"][0],
-                DISTRICTS,
+                salary_data=SALARY_PARAMETERS["Master's and 60 units"][0],
                 focus="VUSD",
                 degree="Master's",
                 units=60,
@@ -129,10 +128,13 @@ def update_line_graph(degree_and_units, focus, raise_percent):
         degree,
         units,
     ) = SALARY_PARAMETERS[degree_and_units]
-    salary_data = apply_proposed_raise(
-        salary_data, focus, raise_percent
+    salary_data = apply_proposed_raise(salary_data, focus, raise_percent)
+    return construct_annual_salary_graph(
+        salary_data,
+        focus,
+        degree,
+        units,
     )
-    return construct_annual_salary_graph(salary_data, DISTRICTS, focus, degree, units)
 
 
 @app.callback(
@@ -147,9 +149,7 @@ def update_bar_graph(degree_and_units, focus, raise_percent):
         degree,
         units,
     ) = SALARY_PARAMETERS[degree_and_units]
-    salary_data = apply_proposed_raise(
-        salary_data, focus, raise_percent
-    )
+    salary_data = apply_proposed_raise(salary_data, focus, raise_percent)
     career_earnings = calc_career_earnings(
         salary_data,
         DISTRICTS,
@@ -174,9 +174,7 @@ def update_output_div(degree_and_units, focus, raise_percent):
         degree,
         units,
     ) = SALARY_PARAMETERS[degree_and_units]
-    salary_data = apply_proposed_raise(
-        salary_data, focus, raise_percent
-    )
+    salary_data = apply_proposed_raise(salary_data, focus, raise_percent)
     career_earnings = calc_career_earnings(
         salary_data,
         DISTRICTS,
