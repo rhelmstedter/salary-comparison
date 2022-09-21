@@ -4,9 +4,9 @@ from districts_data import DISTRICTS, SALARY_PARAMETERS
 from salary_comparison import (
     apply_proposed_raise,
     calc_career_earnings,
-    calc_overall_expected_value,
     calc_career_deltas,
     calc_expected_value,
+    calc_overall_expected_value,
 )
 
 
