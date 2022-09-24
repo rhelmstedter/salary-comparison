@@ -28,68 +28,6 @@ TEST_DIFFERENT_MONTHLY_PREMIUMS = {
 
 
 @pytest.mark.parametrize(
-    "district, expected",
-    [
-        ("CVUSD", 2832936),
-        ("OUHSD", 3398180),
-        ("VUSD", 2640309),
-    ],
-)
-def test_earnings_BA_30(district, expected):
-    salary_data = SALARY_PARAMETERS["Bachelor's and 30 units"][0]
-    earnings = calc_career_earnings(salary_data, DISTRICTS)
-    actual = earnings[district]
-    assert actual == expected
-
-
-@pytest.mark.parametrize(
-    "district, expected",
-    [
-        ("OPUSD", 2834142),
-        ("OSD", 3201259),
-        ("OVSD", 3127890),
-    ],
-)
-def test_earnings_BA_45(district, expected):
-    salary_data = SALARY_PARAMETERS["Bachelor's and 45 units"][0]
-    earnings = calc_career_earnings(salary_data, DISTRICTS)
-    actual = earnings[district]
-    assert actual == expected
-
-
-@pytest.mark.parametrize(
-    "district, expected",
-    [
-        ("HESD", 3721746),
-        ("PVSD", 3166386 + 500 * 36),
-        ("SPUSD", 3606832),
-    ],
-)
-def test_earnings_MA_60(district, expected):
-    salary_data = SALARY_PARAMETERS["Master's and 60 units"][0]
-    earnings = calc_career_earnings(salary_data, DISTRICTS)
-    actual = earnings[district]
-    assert actual == expected
-
-
-@pytest.mark.parametrize(
-    "district, expected",
-    [
-        ("RSD", 3463724),
-        ("FUSD", 3392456),
-        ("SVUSD", 3102034),
-        ("MUSD", 3088200),
-        ("VUSD", 3097190),
-    ],
-)
-def test_earnings_MA_75(district, expected):
-    salary_data = SALARY_PARAMETERS["Master's and 75 units"][0]
-    earnings = calc_career_earnings(salary_data, DISTRICTS)
-    actual = earnings[district]
-    assert actual == expected
-
-
-@pytest.mark.parametrize(
     "district, raise_percent, expected",
     [
         ("VUSD", 3, int(2640309 * 1.03)),
@@ -98,6 +36,10 @@ def test_earnings_MA_75(district, expected):
     ],
 )
 def test_apply_raise(district, raise_percent, expected):
+    """Confirm that the raise is being applied to the correct district and
+        increases by the correct amount
+    """
+
     salary_data = SALARY_PARAMETERS["Bachelor's and 30 units"][0]
     salary_data = apply_proposed_raise(salary_data, district, raise_percent)
     earnings = calc_career_earnings(salary_data, DISTRICTS)
@@ -114,23 +56,33 @@ def test_apply_raise(district, raise_percent, expected):
     ],
 )
 def test_expected_value(deltas, insurance_deltas, expected):
+    """Calculate the expected value"""
     actual = calc_expected_value(deltas, insurance_deltas)
     assert actual == expected
 
 
 def test_overall_expected_value_small():
+    """Calculate the expected value for two districts"""
     actual = calc_overall_expected_value(["HESD", "VUSD"], "VUSD", 0)
     expected = -691792
     assert actual == expected
 
 
 def test_overall_expected_value():
+    """Calculate the overall expected value for all districts
+        with VUSD as the focus
+    """
     actual = calc_overall_expected_value()
     expected = -336719
     assert actual == expected
 
 
 def test_career_deltas_with_focus():
+    """Calculate the pay difference using fake data.
+
+    Monthly premiums are the same for all districts and it includes
+    the focus district in the results.
+    """
     actual = calc_career_deltas(
         TEST_EARNINGS,
         TEST_SAME_MONTHLY_PREMIUMS,
@@ -141,6 +93,11 @@ def test_career_deltas_with_focus():
 
 
 def test_career_deltas_no_focus():
+    """Calculate the pay difference using fake data.
+
+    Monthly premiums are the same for all districts and it excludes
+    the focus district in the results.
+    """
     actual = calc_career_deltas(
         TEST_EARNINGS,
         TEST_SAME_MONTHLY_PREMIUMS,
@@ -152,6 +109,11 @@ def test_career_deltas_no_focus():
 
 
 def test_career_deltas_different_premiums():
+    """Calculate the pay difference using fake data.
+
+    Monthly premiums are the different for all districts and it includes
+    the focus district in the results.
+    """
     actual = calc_career_deltas(
         TEST_EARNINGS,
         TEST_DIFFERENT_MONTHLY_PREMIUMS,
