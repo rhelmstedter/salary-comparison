@@ -12,6 +12,9 @@ from salary_comparison import calc_career_earnings
     ],
 )
 def test_earnings_BA_30(district, expected):
+    """Confirm that \"Bachelor's and 30 units\" dataframe is constructed
+    acurately
+    """
     salary_data = SALARY_PARAMETERS["Bachelor's and 30 units"][0]
     earnings = calc_career_earnings(salary_data, DISTRICTS)
     actual = earnings[district]
@@ -27,6 +30,9 @@ def test_earnings_BA_30(district, expected):
     ],
 )
 def test_earnings_BA_45(district, expected):
+    """Confirm that \"Bachelor's and 45 units\" dataframe is constructed
+    acurately
+    """
     salary_data = SALARY_PARAMETERS["Bachelor's and 45 units"][0]
     earnings = calc_career_earnings(salary_data, DISTRICTS)
     actual = earnings[district]
@@ -42,6 +48,9 @@ def test_earnings_BA_45(district, expected):
     ],
 )
 def test_earnings_MA_60(district, expected):
+    """Confirm that \"Master's and 60 units\" dataframe is constructed
+    acurately
+    """
     salary_data = SALARY_PARAMETERS["Master's and 60 units"][0]
     earnings = calc_career_earnings(salary_data, DISTRICTS)
     actual = earnings[district]
@@ -59,6 +68,9 @@ def test_earnings_MA_60(district, expected):
     ],
 )
 def test_earnings_MA_75(district, expected):
+    """Confirm that \"Master's and 75 units\" dataframe is constructed
+    acurately
+    """
     salary_data = SALARY_PARAMETERS["Master's and 75 units"][0]
     earnings = calc_career_earnings(salary_data, DISTRICTS)
     actual = earnings[district]
