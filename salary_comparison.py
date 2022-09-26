@@ -1,44 +1,15 @@
 from statistics import mean
 
-import pandas as pd
 import plotly.graph_objects as go
 from dash import html
 
-from districts_data import DISTRICTS, MONTHLY_PREMIUMS, SALARY_PARAMETERS
+from salary import Salary
+from constants import MONTHLY_PREMIUMS, DISTRICTS
+from districts_data import SALARY_PARAMETERS
 
 TEAL = "#079A82"
 LIGHTGRAY = "#eeeeee"
 GRAY = "#aaaaaa"
-
-
-def apply_proposed_raise(
-    salary_data: pd.DataFrame,
-    focus: str,
-    raise_percent: float,
-) -> pd.DataFrame:
-    """Apply a proposed raise to the district of focus.
-
-    :salary_data: The dataframe that contains all the salary data.
-    :focus: The district to which the proposed raise will be applied.
-    :raise_percent: The proposed raise as a percentage.
-    """
-    salary_data = salary_data.copy(deep=True)
-    salary_data[focus] = salary_data[focus] * (1 + raise_percent / 100)
-    return salary_data
-
-
-def calc_career_earnings(
-    salary_data: pd.DataFrame,
-    districts: list[str],
-) -> dict[str, int]:
-    """Calculates the carreer earnings for each district.
-
-    :salary_data: The DataFrame used to calculate the career earnings
-    :districts: the list of districts to include in the calculation.
-    :returns: A dictionary with keys of the district abbreviations and values of the
-        carreer earnings.
-    """
-    return {district: int(salary_data[district].sum()) for district in districts}
 
 
 def calc_career_deltas(
@@ -112,9 +83,8 @@ def calc_expected_value(
 def construct_analysis_content(
     expected_value: float,
     overall_expected_value: float,
+    salary: Salary,
     focus: str,
-    degree: str,
-    units: int,
 ) -> list[html.P]:
     """Contructs the anaylsis content displayed under the graphs.
 
@@ -131,7 +101,7 @@ def construct_analysis_content(
     )
     analysis_content.append(
         html.P(
-            f"""Lifetime earnings with a {degree} degree with {units} units has an expected value of ${round(expected_value,-3):,.0f}."""
+            f"""Lifetime earnings with a {salary.degree} degree with {salary.units} units has an expected value of ${round(expected_value,-3):,.0f}."""
         )
     )
     analysis_content.append(
@@ -143,7 +113,7 @@ def construct_analysis_content(
 
 
 def calc_overall_expected_value(
-    districts: list = DISTRICTS,
+    districts: list,
     focus: str = "VUSD",
     raise_percent: float = 0,
 ) -> float:
@@ -156,10 +126,9 @@ def calc_overall_expected_value(
     :returns: The overall expected value rounded to the thousands place.
     """
     expected_values = []
-    for _, data in SALARY_PARAMETERS.items():
-        df, degree, units = data
-        df = apply_proposed_raise(df.copy(deep=True), focus, raise_percent)
-        career_earnings = calc_career_earnings(df, districts)
+    for salary in SALARY_PARAMETERS.values():
+        salary.apply_proposed_raise(focus, raise_percent)
+        career_earnings = salary.calc_career_earnings(districts)
         deltas = calc_career_deltas(
             career_earnings,
             MONTHLY_PREMIUMS,
@@ -171,10 +140,8 @@ def calc_overall_expected_value(
 
 
 def construct_lifetime_earnings_graph(
-    career_earnings: dict[str, int],
+    salary: Salary,
     focus: str,
-    degree: str,
-    units: int,
 ) -> go.Figure:
     """Constructs a horizontal barchart of lifetime earnings and displays the difference
         between a district and the focus on hover.
@@ -187,6 +154,7 @@ def construct_lifetime_earnings_graph(
 
     :returns: The plotly figure that contains the lifetime earnings barchart
     """
+    career_earnings = salary.calc_career_earnings(DISTRICTS)
     sorted_career_earnings = dict(sorted(career_earnings.items(), key=lambda x: x[1]))
     career_earnings_deltas, career_earnings_deltas_insurance = calc_career_deltas(
         sorted_career_earnings,
@@ -195,9 +163,13 @@ def construct_lifetime_earnings_graph(
         True,
     )
     hovertemplate = []
-    for delta, insurance_delta in zip(career_earnings_deltas, career_earnings_deltas_insurance):
+    for delta, insurance_delta in zip(
+        career_earnings_deltas, career_earnings_deltas_insurance
+    ):
         if delta == insurance_delta:
-            hovertemplate.append(f"${-1*insurance_delta/1000:.0f}k difference with {focus}")
+            hovertemplate.append(
+                f"${-1*insurance_delta/1000:.0f}k difference with {focus}"
+            )
         elif insurance_delta < 0 and delta < 0:
             hovertemplate.append(
                 f"${-1*insurance_delta/1000:.0f}k to ${-1*delta/1000:.0f}k difference with {focus}"
@@ -272,10 +244,11 @@ def construct_lifetime_earnings_graph(
 
 
 def construct_annual_salary_graph(
-    salary_data: pd.DataFrame,
+    # salary_data: pd.DataFrame,
+    salary: Salary,
     focus: str,
-    degree: str,
-    units: int,
+    # degree: str,
+    # units: int,
 ) -> go.Figure:
     """Creates the line plot of the annual salary for each district.
 
@@ -289,7 +262,7 @@ def construct_annual_salary_graph(
 
     fig = go.Figure()
     annotations = []
-    for district in salary_data.columns:
+    for district in salary.salary_data.columns:
         if district == focus:
             line_color = TEAL
             text_color = TEAL
@@ -298,7 +271,7 @@ def construct_annual_salary_graph(
                 dict(
                     xref="paper",
                     x=1,
-                    y=salary_data.loc[36, district],
+                    y=salary.salary_data.loc[36, district],
                     xanchor="left",
                     yanchor="middle",
                     text=f"{district}",
@@ -311,8 +284,8 @@ def construct_annual_salary_graph(
             text_color = GRAY
         fig.add_trace(
             go.Scatter(
-                x=salary_data.index,
-                y=salary_data[district],
+                x=salary.salary_data.index,
+                y=salary.salary_data[district],
                 line=dict(color=line_color, width=3),
                 text=district,
             ),
@@ -369,7 +342,7 @@ def construct_annual_salary_graph(
             y=1.10,
             xanchor="left",
             yanchor="bottom",
-            text=f"{degree} Degree and {units} units",
+            text=f"{salary.degree} Degree and {salary.units} units",
             font=dict(family="Lato", size=30, color="rgb(37,37,37)"),
             showarrow=False,
         )
@@ -380,4 +353,4 @@ def construct_annual_salary_graph(
 
 if __name__ == "__main__":
     print(calc_overall_expected_value(["HESD", "VUSD"], "VUSD", 0))
-    print(calc_overall_expected_value())
+    print(calc_overall_expected_value(DISTRICTS))

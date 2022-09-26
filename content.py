@@ -1,4 +1,4 @@
-from districts_data import MONTHLY_PREMIUMS
+from constants import MONTHLY_PREMIUMS
 
 intro = """This dashboard displays the estimated lifetime earnings for several school districts in Ventura County, CA."""
 

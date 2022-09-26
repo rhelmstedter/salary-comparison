@@ -3,11 +3,10 @@ from dash import dcc, html
 from dash.dependencies import Input, Output
 
 import content
-from districts_data import DISTRICTS, MONTHLY_PREMIUMS, SALARY_PARAMETERS
+from districts_data import SALARY_PARAMETERS
+from constants import DISTRICTS, MONTHLY_PREMIUMS
 from salary_comparison import (
-    apply_proposed_raise,
     calc_career_deltas,
-    calc_career_earnings,
     calc_expected_value,
     calc_overall_expected_value,
     construct_lifetime_earnings_graph,
@@ -84,23 +83,16 @@ app.layout = html.Div(
         dcc.Graph(
             id="line_graph",
             figure=construct_annual_salary_graph(
-                salary_data=SALARY_PARAMETERS["Master's and 60 units"][0],
+                salary=SALARY_PARAMETERS["Master's and 60 units"],
                 focus="VUSD",
-                degree="Master's",
-                units=60,
             ),
             className="card",
         ),
         dcc.Graph(
             id="bar_graph",
             figure=construct_lifetime_earnings_graph(
-                calc_career_earnings(
-                    SALARY_PARAMETERS["Master's and 60 units"][0],
-                    DISTRICTS,
-                ),
+                SALARY_PARAMETERS.get("Master's and 60 units"),
                 focus="VUSD",
-                degree="Master's",
-                units=60,
             ),
             className="card",
         ),
@@ -123,17 +115,11 @@ app.layout = html.Div(
     Input("raise_percent", "value"),
 )
 def update_line_graph(degree_and_units, focus, raise_percent):
-    (
-        salary_data,
-        degree,
-        units,
-    ) = SALARY_PARAMETERS[degree_and_units]
-    salary_data = apply_proposed_raise(salary_data, focus, raise_percent)
+    salary = SALARY_PARAMETERS[degree_and_units]
+    salary.apply_proposed_raise(focus, raise_percent)
     return construct_annual_salary_graph(
-        salary_data,
+        salary,
         focus,
-        degree,
-        units,
     )
 
 
@@ -144,21 +130,11 @@ def update_line_graph(degree_and_units, focus, raise_percent):
     Input("raise_percent", "value"),
 )
 def update_bar_graph(degree_and_units, focus, raise_percent):
-    (
-        salary_data,
-        degree,
-        units,
-    ) = SALARY_PARAMETERS[degree_and_units]
-    salary_data = apply_proposed_raise(salary_data, focus, raise_percent)
-    career_earnings = calc_career_earnings(
-        salary_data,
-        DISTRICTS,
-    )
+    salary = SALARY_PARAMETERS[degree_and_units]
+    salary.apply_proposed_raise(focus, raise_percent)
     return construct_lifetime_earnings_graph(
-        career_earnings,
+        salary,
         focus,
-        degree,
-        units,
     )
 
 
@@ -169,18 +145,10 @@ def update_bar_graph(degree_and_units, focus, raise_percent):
     Input("raise_percent", "value"),
 )
 def update_output_div(degree_and_units, focus, raise_percent):
-    (
-        salary_data,
-        degree,
-        units,
-    ) = SALARY_PARAMETERS[degree_and_units]
-    salary_data = apply_proposed_raise(salary_data, focus, raise_percent)
-    career_earnings = calc_career_earnings(
-        salary_data,
-        DISTRICTS,
-    )
+    salary = SALARY_PARAMETERS[degree_and_units]
+    salary.apply_proposed_raise(focus, raise_percent)
     career_earnings_deltas, career_earnings_deltas_insurance = calc_career_deltas(
-        career_earnings,
+        salary.calc_career_earnings(DISTRICTS),
         MONTHLY_PREMIUMS,
         focus,
         False,
@@ -198,8 +166,6 @@ def update_output_div(degree_and_units, focus, raise_percent):
         expected_value,
         overall_expected_value,
         focus,
-        degree,
-        units,
     )
 
 

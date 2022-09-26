@@ -1,22 +1,7 @@
 import pandas as pd
+from salary import Salary
+from constants import DISTRICTS
 
-MONTHLY_PREMIUMS = {
-    "HESD": 0,
-    "OVSD": 350,
-    "OUHSD": 180,
-    "OSD": 130,
-    "PVSD": 200,
-    "RSD": 200,
-    "SPUSD": 250,
-    "SVUSD": 250,
-    "VUSD": 0,
-    "CVUSD": 160,
-    "FUSD": 300,
-    "OPUSD": 400,
-    "MUSD": 125,
-}
-
-DISTRICTS = list(MONTHLY_PREMIUMS.keys())
 
 ventura_df = pd.read_csv(
     "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-Ventura.csv",
@@ -226,12 +211,18 @@ masters_75_units: pd.DataFrame = pd.concat(
 
 
 SALARY_PARAMETERS = {
-    "Bachelor's and 30 units": [bachelors_30_units, "Bachelor's", 30],
-    "Bachelor's and 45 units": [bachelors_45_units, "Bachelor's", 45],
-    "Bachelor's and 60 units": [bachelors_60_units, "Bachelor's", 60],
-    "Bachelor's and 75 units": [bachelors_75_units, "Bachelor's", 75],
-    "Master's and 30 units": [masters_30_units, "Master's", 30],
-    "Master's and 45 units": [masters_45_units, "Master's", 45],
-    "Master's and 60 units": [masters_60_units, "Master's", 60],
-    "Master's and 75 units": [masters_75_units, "Master's", 75],
+    "Bachelor's and 30 units": Salary(bachelors_30_units, "Bachelor's", 30),
+    "Bachelor's and 45 units": Salary(bachelors_45_units, "Bachelor's", 45),
+    "Bachelor's and 60 units": Salary(bachelors_60_units, "Bachelor's", 60),
+    "Bachelor's and 75 units": Salary(bachelors_75_units, "Bachelor's", 75),
+    "Master's and 30 units": Salary(masters_30_units, "Master's", 30),
+    "Master's and 45 units": Salary(masters_45_units, "Master's", 45),
+    "Master's and 60 units": Salary(masters_60_units, "Master's", 60),
+    "Master's and 75 units": Salary(masters_75_units, "Master's", 75),
 }
+
+
+if __name__ == "__main__":
+    salary = SALARY_PARAMETERS["Bachelor's and 30 units"]
+    print(salary.units)
+    print(salary.salary_data)
