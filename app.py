@@ -16,7 +16,9 @@ from salary_comparison import (
     construct_analysis_content,
 )
 
-districts = [{"label": district, "value": district} for district in sorted(DISTRICTS)]
+SORTED_DISTRICTS = [{"label": district, "value": district} for district in sorted(DISTRICTS)]
+DEFAULT_SALARY = Salary(*SALARY_PARAMETERS["Master's and 60 units"])
+
 external_stylesheets = [
     {
         "href": "https://fonts.googleapis.com/css2?"
@@ -35,7 +37,7 @@ app.layout = html.Div(
                     children="Lifetime Earnings For Teachers", className="header-title"
                 ),
                 html.P(
-                    children="The estimated lifetime earnings for teachers across school districts in Ventura County, CA.",
+                    children="The estimated lifetime earnings for teachers in Ventura County, CA.",
                     className="header-description",
                 ),
             ],
@@ -48,7 +50,7 @@ app.layout = html.Div(
                         html.Div("District", className="menu-title"),
                         dcc.Dropdown(
                             id="focus",
-                            options=districts,
+                            options=SORTED_DISTRICTS,
                             value="VUSD",
                             className="Dropdown",
                         ),
@@ -85,7 +87,7 @@ app.layout = html.Div(
         dcc.Graph(
             id="line_graph",
             figure=construct_annual_salary_graph(
-                salary=Salary(*SALARY_PARAMETERS["Master's and 60 units"]),
+                salary=DEFAULT_SALARY,
                 focus="VUSD",
             ),
             className="card",
@@ -93,7 +95,7 @@ app.layout = html.Div(
         dcc.Graph(
             id="bar_graph",
             figure=construct_lifetime_earnings_graph(
-                salary=Salary(*SALARY_PARAMETERS["Master's and 60 units"]),
+                salary=DEFAULT_SALARY,
                 focus="VUSD",
             ),
             className="card",
@@ -111,47 +113,32 @@ app.layout = html.Div(
 
 
 @app.callback(
-    Output("line_graph", "figure"),
-    Input("degree_and_units", "value"),
-    Input("focus", "value"),
-    Input("raise_percent", "value"),
+    [
+        Output("bar_graph", "figure"),
+        Output("line_graph", "figure"),
+        Output("career_diffs", "children"),
+    ],
+    [
+        Input("degree_and_units", "value"),
+        Input("focus", "value"),
+        Input("raise_percent", "value"),
+    ],
 )
-def update_line_graph(degree_and_units, focus, raise_percent):
+def update_layout(degree_and_units, focus, raise_percent):
+    """Updates the graphs and the expected value calculations based on the
+       selections from the dropdown menus
+    """
     data, degree, units = SALARY_PARAMETERS[degree_and_units]
     salary = Salary(deepcopy(data), degree, units)
     salary.apply_proposed_raise(focus, raise_percent)
-    return construct_annual_salary_graph(
+    bar_graph = construct_lifetime_earnings_graph(
         salary,
         focus,
     )
-
-
-@app.callback(
-    Output("bar_graph", "figure"),
-    Input("degree_and_units", "value"),
-    Input("focus", "value"),
-    Input("raise_percent", "value"),
-)
-def update_bar_graph(degree_and_units, focus, raise_percent):
-    data, degree, units = SALARY_PARAMETERS[degree_and_units]
-    salary = Salary(deepcopy(data), degree, units)
-    salary.apply_proposed_raise(focus, raise_percent)
-    return construct_lifetime_earnings_graph(
+    line_graph = construct_annual_salary_graph(
         salary,
         focus,
     )
-
-
-@app.callback(
-    Output("career_diffs", "children"),
-    Input("degree_and_units", "value"),
-    Input("focus", "value"),
-    Input("raise_percent", "value"),
-)
-def update_output_div(degree_and_units, focus, raise_percent):
-    data, degree, units = SALARY_PARAMETERS[degree_and_units]
-    salary = Salary(deepcopy(data), degree, units)
-    salary.apply_proposed_raise(focus, raise_percent)
     career_earnings_deltas, career_earnings_deltas_insurance = calc_career_deltas(
         salary.calc_career_earnings(DISTRICTS),
         MONTHLY_PREMIUMS,
@@ -167,12 +154,13 @@ def update_output_div(degree_and_units, focus, raise_percent):
         focus,
         raise_percent,
     )
-    return construct_analysis_content(
+    analysis_content = construct_analysis_content(
         expected_value,
         overall_expected_value,
         salary,
         focus,
     )
+    return bar_graph, line_graph, analysis_content
 
 
 if __name__ == "__main__":
