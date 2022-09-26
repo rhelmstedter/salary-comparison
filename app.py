@@ -1,19 +1,21 @@
+from copy import deepcopy
+
 import dash
+import plotly.graph_objects as go
 from dash import dcc, html
 from dash.dependencies import Input, Output
 
 import content
-from copy import deepcopy
+from constants import DISTRICTS, MONTHLY_PREMIUMS
 from districts_data import SALARY_PARAMETERS
 from salary import Salary
-from constants import DISTRICTS, MONTHLY_PREMIUMS
 from salary_comparison import (
     calc_career_deltas,
     calc_expected_value,
     calc_overall_expected_value,
-    construct_lifetime_earnings_graph,
-    construct_annual_salary_graph,
     construct_analysis_content,
+    construct_annual_salary_graph,
+    construct_lifetime_earnings_graph,
 )
 
 SORTED_DISTRICTS = [
@@ -126,9 +128,18 @@ app.layout = html.Div(
         Input("raise_percent", "value"),
     ],
 )
-def update_layout(degree_and_units, focus, raise_percent):
+def update_layout(
+    degree_and_units: str, focus: str, raise_percent: int
+) -> tuple[go.Figure, list[html.P]]:
     """Updates the graphs and the expected value calculations based on the
     selections from the dropdown menus
+
+    :degree_and_units: The string used as a key for the SALARY_PARAMETERS dict.
+    :focus: The district of focus. Is highlights on the graph and used to calculate
+        expected value.
+    :raise_percent: The integer used to apply a raise percent.
+
+    :returns: The bar graph, the line graph, and the expected value analysis content.
     """
     data, degree, units = SALARY_PARAMETERS[degree_and_units]
     salary = Salary(deepcopy(data), degree, units)
