@@ -90,9 +90,10 @@ def construct_analysis_content(
     """Contructs the anaylsis content displayed under the graphs.
 
     :expected_value: The expected value of an employee in the focus district.
+    :overall_expected_value: The expected value across all degree types and units of an
+        employee in the focus district.
+    :salary: The Salary object used in the anaylsis.
     :focus: The district of focus. All other earnings are subtracted from this district.
-    :degree: The degree held by the teacher, either Bachelor's or Master's.
-    :units: The number of units obtained by the teacher.
 
     :returns: A list of html paragraphs that display the expected value.
     """
@@ -119,7 +120,6 @@ def calc_overall_expected_value(
 ) -> float:
     """Calculates the expected value across all degree types and unitsself.
 
-    :districts: A list of districts to include in calculating the deltas in earnings.
     :focus: The district of focus.
     :raise_percent: The proposed raise as a percentage.
 
@@ -147,11 +147,8 @@ def construct_lifetime_earnings_graph(
     """Constructs a horizontal barchart of lifetime earnings and displays the difference
         between a district and the focus on hover.
 
-    :career_earnings: A dictionary with keys containing the district abbreviations and
-        values of the career earnings for each district.
+    :salary: The Salary object used to construct the graph.
     :focus: The district of focus. All other earnings are subtracted from this district.
-    :degree: The degree held by the teacher, either Bachelor's or Master's.
-    :units: The number of units obtained by the teacher.
 
     :returns: The plotly figure that contains the lifetime earnings barchart
     """
@@ -245,18 +242,13 @@ def construct_lifetime_earnings_graph(
 
 
 def construct_annual_salary_graph(
-    # salary_data: pd.DataFrame,
     salary: Salary,
     focus: str,
-    # degree: str,
-    # units: int,
 ) -> go.Figure:
     """Creates the line plot of the annual salary for each district.
 
-    :salary_data: DataFrame that contains the salary scale for each district based on the parameters given.
+    :salary: The Salary object used to construct the graph.
     :focus: The district to highlight in on the chart.
-    :degree: The degree held by the teacher, either Bachelor's or Master's.
-    :units: The number of units obtained by the teacher.
 
     :returns: The plotly figure that contains the annual salary vs years teaching
     """
