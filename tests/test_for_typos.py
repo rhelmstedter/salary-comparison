@@ -2,7 +2,7 @@ from copy import deepcopy
 
 import pytest
 
-from districts_data import DISTRICTS, SALARY_PARAMETERS
+from districts_data import SALARY_PARAMETERS
 from salary import Salary
 
 
@@ -20,7 +20,7 @@ def test_earnings_BA_30(district, expected):
     """
     data, degree, units = SALARY_PARAMETERS["Bachelor's and 30 units"]
     salary = Salary(deepcopy(data), degree, units)
-    earnings = salary.calc_career_earnings(DISTRICTS)
+    earnings = salary.calc_career_earnings()
     actual = earnings[district]
     assert actual == expected
 
@@ -39,7 +39,7 @@ def test_earnings_BA_45(district, expected):
     """
     data, degree, units = SALARY_PARAMETERS["Bachelor's and 45 units"]
     salary = Salary(deepcopy(data), degree, units)
-    earnings = salary.calc_career_earnings(DISTRICTS)
+    earnings = salary.calc_career_earnings()
     actual = earnings[district]
     assert actual == expected
 
@@ -58,7 +58,7 @@ def test_earnings_MA_60(district, expected):
     """
     data, degree, units = SALARY_PARAMETERS["Master's and 60 units"]
     salary = Salary(deepcopy(data), degree, units)
-    earnings = salary.calc_career_earnings(DISTRICTS)
+    earnings = salary.calc_career_earnings()
     actual = earnings[district]
     assert actual == expected
 
@@ -79,6 +79,6 @@ def test_earnings_MA_75(district, expected):
     """
     data, degree, units = SALARY_PARAMETERS["Master's and 75 units"]
     salary = Salary(deepcopy(data), degree, units)
-    earnings = salary.calc_career_earnings(DISTRICTS)
+    earnings = salary.calc_career_earnings()
     actual = earnings[district]
     assert actual == expected

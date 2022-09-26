@@ -114,7 +114,6 @@ def construct_analysis_content(
 
 
 def calc_overall_expected_value(
-    districts: list,
     focus: str = "VUSD",
     raise_percent: float = 0,
 ) -> float:
@@ -130,7 +129,7 @@ def calc_overall_expected_value(
     for data, degree, units in SALARY_PARAMETERS.values():
         salary = Salary(deepcopy(data), degree, units)
         salary.apply_proposed_raise(focus, raise_percent)
-        career_earnings = salary.calc_career_earnings(districts)
+        career_earnings = salary.calc_career_earnings()
         deltas = calc_career_deltas(
             career_earnings,
             MONTHLY_PREMIUMS,
@@ -156,7 +155,7 @@ def construct_lifetime_earnings_graph(
 
     :returns: The plotly figure that contains the lifetime earnings barchart
     """
-    career_earnings = salary.calc_career_earnings(DISTRICTS)
+    career_earnings = salary.calc_career_earnings()
     sorted_career_earnings = dict(sorted(career_earnings.items(), key=lambda x: x[1]))
     career_earnings_deltas, career_earnings_deltas_insurance = calc_career_deltas(
         sorted_career_earnings,
@@ -354,5 +353,4 @@ def construct_annual_salary_graph(
 
 
 if __name__ == "__main__":
-    print(calc_overall_expected_value(["HESD", "VUSD"], "VUSD", 0))
-    print(calc_overall_expected_value(DISTRICTS))
+    print(calc_overall_expected_value())

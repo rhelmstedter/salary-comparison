@@ -16,7 +16,9 @@ from salary_comparison import (
     construct_analysis_content,
 )
 
-SORTED_DISTRICTS = [{"label": district, "value": district} for district in sorted(DISTRICTS)]
+SORTED_DISTRICTS = [
+    {"label": district, "value": district} for district in sorted(DISTRICTS)
+]
 DEFAULT_SALARY = Salary(*SALARY_PARAMETERS["Master's and 60 units"])
 
 external_stylesheets = [
@@ -126,7 +128,7 @@ app.layout = html.Div(
 )
 def update_layout(degree_and_units, focus, raise_percent):
     """Updates the graphs and the expected value calculations based on the
-       selections from the dropdown menus
+    selections from the dropdown menus
     """
     data, degree, units = SALARY_PARAMETERS[degree_and_units]
     salary = Salary(deepcopy(data), degree, units)
@@ -140,7 +142,7 @@ def update_layout(degree_and_units, focus, raise_percent):
         focus,
     )
     career_earnings_deltas, career_earnings_deltas_insurance = calc_career_deltas(
-        salary.calc_career_earnings(DISTRICTS),
+        salary.calc_career_earnings(),
         MONTHLY_PREMIUMS,
         focus,
         False,
@@ -150,7 +152,6 @@ def update_layout(degree_and_units, focus, raise_percent):
         career_earnings_deltas_insurance,
     )
     overall_expected_value = calc_overall_expected_value(
-        DISTRICTS,
         focus,
         raise_percent,
     )

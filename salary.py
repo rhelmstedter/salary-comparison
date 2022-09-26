@@ -2,7 +2,15 @@ import pandas as pd
 
 
 class Salary:
-    def __init__(self, salary_data, degree, units):
+    """A class to represent a salary."""
+
+    def __init__(self, salary_data=pd.DataFrame, degree=str, units=int):
+        """Contructs attributes for the salary object.
+
+        :salary_data: A pandas dataframe containing the annually salary.
+        :degree: The degree held by the teacher, either 'Bachelor's' or 'Master's'
+        :units: The number of units held by the teacher.
+        """
         self.salary_data = salary_data
         self.degree = degree
         self.units = units
@@ -26,7 +34,6 @@ class Salary:
 
     def calc_career_earnings(
         self,
-        districts: list[str],
     ) -> dict[str, int]:
         """Calculates the carreer earnings for each district.
 
@@ -35,6 +42,7 @@ class Salary:
         :returns: A dictionary with keys of the district abbreviations and values of the
             carreer earnings.
         """
+        districts = self.salary_data.columns
         return {
             district: int(self.salary_data[district].sum()) for district in districts
         }

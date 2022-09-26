@@ -1,6 +1,6 @@
 import pandas as pd
-from constants import DISTRICTS
 
+from constants import DISTRICTS
 
 ventura_df = pd.read_csv(
     "https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/2022-2023-Ventura.csv",
@@ -55,6 +55,7 @@ moorpark_df = pd.read_csv(
     index_col="step",
 )
 
+# NOTE: the order of the dataframes must match the order of the monthly premiums
 bachelors_30_units: pd.DataFrame = pd.concat(
     [
         hueneme_df["class 3"],

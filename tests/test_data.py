@@ -2,7 +2,7 @@ from copy import deepcopy
 
 import pytest
 
-from districts_data import DISTRICTS, SALARY_PARAMETERS
+from districts_data import SALARY_PARAMETERS
 from salary import Salary
 from salary_comparison import (
     calc_career_deltas,
@@ -43,7 +43,7 @@ def test_apply_raise(district, raise_percent, expected):
     data, degree, units = SALARY_PARAMETERS["Bachelor's and 30 units"]
     salary = Salary(deepcopy(data), degree, units)
     salary.apply_proposed_raise(district, raise_percent)
-    earnings = salary.calc_career_earnings(DISTRICTS)
+    earnings = salary.calc_career_earnings()
     actual = earnings[district]
     assert actual == int(expected)
 
@@ -62,18 +62,11 @@ def test_expected_value(deltas, insurance_deltas, expected):
     assert actual == expected
 
 
-def test_overall_expected_value_small():
-    """Calculate the expected value for two districts"""
-    actual = calc_overall_expected_value(["HESD", "VUSD"], "VUSD", 0)
-    expected = -691792
-    assert actual == expected
-
-
 def test_overall_expected_value():
     """Calculate the overall expected value for all districts
     with VUSD as the focus
     """
-    actual = calc_overall_expected_value(DISTRICTS)
+    actual = calc_overall_expected_value()
     expected = -336719
     assert actual == expected
 
