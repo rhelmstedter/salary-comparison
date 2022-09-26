@@ -1,14 +1,14 @@
+from copy import deepcopy
+
 import pytest
 
 from districts_data import DISTRICTS, SALARY_PARAMETERS
+from salary import Salary
 from salary_comparison import (
-    apply_proposed_raise,
-    calc_career_earnings,
     calc_career_deltas,
     calc_expected_value,
     calc_overall_expected_value,
 )
-
 
 TEST_EARNINGS = {
     "dist1": 1_000_000,
@@ -37,12 +37,13 @@ TEST_DIFFERENT_MONTHLY_PREMIUMS = {
 )
 def test_apply_raise(district, raise_percent, expected):
     """Confirm that the raise is being applied to the correct district and
-        increases by the correct amount
+    increases by the correct amount
     """
 
-    salary_data = SALARY_PARAMETERS["Bachelor's and 30 units"][0]
-    salary_data = apply_proposed_raise(salary_data, district, raise_percent)
-    earnings = calc_career_earnings(salary_data, DISTRICTS)
+    data, degree, units = SALARY_PARAMETERS["Bachelor's and 30 units"]
+    salary = Salary(deepcopy(data), degree, units)
+    salary.apply_proposed_raise(district, raise_percent)
+    earnings = salary.calc_career_earnings(DISTRICTS)
     actual = earnings[district]
     assert actual == int(expected)
 
@@ -70,9 +71,9 @@ def test_overall_expected_value_small():
 
 def test_overall_expected_value():
     """Calculate the overall expected value for all districts
-        with VUSD as the focus
+    with VUSD as the focus
     """
-    actual = calc_overall_expected_value()
+    actual = calc_overall_expected_value(DISTRICTS)
     expected = -336719
     assert actual == expected
 

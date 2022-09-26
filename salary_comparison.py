@@ -1,11 +1,12 @@
+from copy import deepcopy
 from statistics import mean
 
 import plotly.graph_objects as go
 from dash import html
 
-from salary import Salary
-from constants import MONTHLY_PREMIUMS, DISTRICTS
+from constants import DISTRICTS, MONTHLY_PREMIUMS
 from districts_data import SALARY_PARAMETERS
+from salary import Salary
 
 TEAL = "#079A82"
 LIGHTGRAY = "#eeeeee"
@@ -126,7 +127,8 @@ def calc_overall_expected_value(
     :returns: The overall expected value rounded to the thousands place.
     """
     expected_values = []
-    for salary in SALARY_PARAMETERS.values():
+    for data, degree, units in SALARY_PARAMETERS.values():
+        salary = Salary(deepcopy(data), degree, units)
         salary.apply_proposed_raise(focus, raise_percent)
         career_earnings = salary.calc_career_earnings(districts)
         deltas = calc_career_deltas(

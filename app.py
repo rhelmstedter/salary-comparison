@@ -3,7 +3,9 @@ from dash import dcc, html
 from dash.dependencies import Input, Output
 
 import content
+from copy import deepcopy
 from districts_data import SALARY_PARAMETERS
+from salary import Salary
 from constants import DISTRICTS, MONTHLY_PREMIUMS
 from salary_comparison import (
     calc_career_deltas,
@@ -83,7 +85,7 @@ app.layout = html.Div(
         dcc.Graph(
             id="line_graph",
             figure=construct_annual_salary_graph(
-                salary=SALARY_PARAMETERS["Master's and 60 units"],
+                salary=Salary(*SALARY_PARAMETERS["Master's and 60 units"]),
                 focus="VUSD",
             ),
             className="card",
@@ -91,7 +93,7 @@ app.layout = html.Div(
         dcc.Graph(
             id="bar_graph",
             figure=construct_lifetime_earnings_graph(
-                SALARY_PARAMETERS.get("Master's and 60 units"),
+                salary=Salary(*SALARY_PARAMETERS["Master's and 60 units"]),
                 focus="VUSD",
             ),
             className="card",
@@ -115,7 +117,8 @@ app.layout = html.Div(
     Input("raise_percent", "value"),
 )
 def update_line_graph(degree_and_units, focus, raise_percent):
-    salary = SALARY_PARAMETERS[degree_and_units]
+    data, degree, units = SALARY_PARAMETERS[degree_and_units]
+    salary = Salary(deepcopy(data), degree, units)
     salary.apply_proposed_raise(focus, raise_percent)
     return construct_annual_salary_graph(
         salary,
@@ -130,7 +133,8 @@ def update_line_graph(degree_and_units, focus, raise_percent):
     Input("raise_percent", "value"),
 )
 def update_bar_graph(degree_and_units, focus, raise_percent):
-    salary = SALARY_PARAMETERS[degree_and_units]
+    data, degree, units = SALARY_PARAMETERS[degree_and_units]
+    salary = Salary(deepcopy(data), degree, units)
     salary.apply_proposed_raise(focus, raise_percent)
     return construct_lifetime_earnings_graph(
         salary,
@@ -145,7 +149,8 @@ def update_bar_graph(degree_and_units, focus, raise_percent):
     Input("raise_percent", "value"),
 )
 def update_output_div(degree_and_units, focus, raise_percent):
-    salary = SALARY_PARAMETERS[degree_and_units]
+    data, degree, units = SALARY_PARAMETERS[degree_and_units]
+    salary = Salary(deepcopy(data), degree, units)
     salary.apply_proposed_raise(focus, raise_percent)
     career_earnings_deltas, career_earnings_deltas_insurance = calc_career_deltas(
         salary.calc_career_earnings(DISTRICTS),
@@ -165,6 +170,7 @@ def update_output_div(degree_and_units, focus, raise_percent):
     return construct_analysis_content(
         expected_value,
         overall_expected_value,
+        salary,
         focus,
     )
 

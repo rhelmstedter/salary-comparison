@@ -1,6 +1,9 @@
+from copy import deepcopy
+
 import pytest
+
 from districts_data import DISTRICTS, SALARY_PARAMETERS
-from salary_comparison import calc_career_earnings
+from salary import Salary
 
 
 @pytest.mark.parametrize(
@@ -15,8 +18,9 @@ def test_earnings_BA_30(district, expected):
     """Confirm that \"Bachelor's and 30 units\" dataframe is constructed
     acurately
     """
-    salary_data = SALARY_PARAMETERS["Bachelor's and 30 units"][0]
-    earnings = calc_career_earnings(salary_data, DISTRICTS)
+    data, degree, units = SALARY_PARAMETERS["Bachelor's and 30 units"]
+    salary = Salary(deepcopy(data), degree, units)
+    earnings = salary.calc_career_earnings(DISTRICTS)
     actual = earnings[district]
     assert actual == expected
 
@@ -33,8 +37,9 @@ def test_earnings_BA_45(district, expected):
     """Confirm that \"Bachelor's and 45 units\" dataframe is constructed
     acurately
     """
-    salary_data = SALARY_PARAMETERS["Bachelor's and 45 units"][0]
-    earnings = calc_career_earnings(salary_data, DISTRICTS)
+    data, degree, units = SALARY_PARAMETERS["Bachelor's and 45 units"]
+    salary = Salary(deepcopy(data), degree, units)
+    earnings = salary.calc_career_earnings(DISTRICTS)
     actual = earnings[district]
     assert actual == expected
 
@@ -51,8 +56,9 @@ def test_earnings_MA_60(district, expected):
     """Confirm that \"Master's and 60 units\" dataframe is constructed
     acurately
     """
-    salary_data = SALARY_PARAMETERS["Master's and 60 units"][0]
-    earnings = calc_career_earnings(salary_data, DISTRICTS)
+    data, degree, units = SALARY_PARAMETERS["Master's and 60 units"]
+    salary = Salary(deepcopy(data), degree, units)
+    earnings = salary.calc_career_earnings(DISTRICTS)
     actual = earnings[district]
     assert actual == expected
 
@@ -71,7 +77,8 @@ def test_earnings_MA_75(district, expected):
     """Confirm that \"Master's and 75 units\" dataframe is constructed
     acurately
     """
-    salary_data = SALARY_PARAMETERS["Master's and 75 units"][0]
-    earnings = calc_career_earnings(salary_data, DISTRICTS)
+    data, degree, units = SALARY_PARAMETERS["Master's and 75 units"]
+    salary = Salary(deepcopy(data), degree, units)
+    earnings = salary.calc_career_earnings(DISTRICTS)
     actual = earnings[district]
     assert actual == expected
