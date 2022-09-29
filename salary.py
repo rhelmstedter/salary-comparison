@@ -15,7 +15,7 @@ class Salary:
         self.degree = degree
         self.units = units
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Salary(salary_data={self.salary_data}, degree={self.degree}, units={self.units}"
 
     def apply_proposed_raise(
