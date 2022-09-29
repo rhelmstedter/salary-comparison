@@ -1,4 +1,7 @@
 import pandas as pd
+from typing import TypeVar
+
+Salary = TypeVar("Salary")
 
 
 class Salary:
@@ -27,15 +30,19 @@ class Salary:
         self,
         focus: str,
         raise_percent: float,
-    ) -> pd.DataFrame:
+    ) -> Salary:
         """Apply a proposed raise to the district of focus.
 
         :salary_data: The dataframe that contains all the salary data.
         :focus: The district to which the proposed raise will be applied.
         :raise_percent: The proposed raise as a percentage.
+
+        :returns: A new Salary object with the proposed raise applied.
         """
-        self.salary_data = self.salary_data.copy(deep=True)
-        self.salary_data[focus] = self.salary_data[focus] * (1 + raise_percent / 100)
+        salary_data = self.salary_data.copy(deep=True)
+        salary_data[focus] = salary_data[focus] * (1 + raise_percent / 100)
+
+        return Salary(salary_data, self.degree, self.units)
 
     def calc_career_earnings(
         self,

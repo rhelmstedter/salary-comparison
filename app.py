@@ -1,5 +1,3 @@
-from copy import deepcopy
-
 import dash
 import plotly.graph_objects as go
 from dash import dcc, html
@@ -138,9 +136,9 @@ def update_layout(
 
     :returns: The bar graph, the line graph, and the expected value analysis content.
     """
-    data, degree, units = SALARY_PARAMETERS[degree_and_units]
-    salary = Salary(deepcopy(data), degree, units)
-    salary.apply_proposed_raise(focus, raise_percent)
+    salary = Salary(*SALARY_PARAMETERS[degree_and_units]).apply_proposed_raise(
+        focus, raise_percent
+    )
     bar_graph = construct_lifetime_earnings_graph(
         salary,
         focus,

@@ -1,10 +1,9 @@
-from copy import deepcopy
 from statistics import mean
 
 import plotly.graph_objects as go
 from dash import html
 
-from constants import DISTRICTS, MONTHLY_PREMIUMS
+from constants import MONTHLY_PREMIUMS
 from districts_data import SALARY_PARAMETERS
 from salary import Salary
 
@@ -130,9 +129,11 @@ def calc_overall_expected_value(
     """
     expected_values = []
     for data, degree, units in SALARY_PARAMETERS.values():
-        salary = Salary(deepcopy(data), degree, units)
-        salary.apply_proposed_raise(focus, raise_percent)
-        career_earnings = salary.calc_career_earnings()
+        career_earnings = (
+            Salary(data, degree, units)
+            .apply_proposed_raise(focus, raise_percent)
+            .calc_career_earnings()
+        )
         deltas = calc_career_deltas(
             career_earnings,
             MONTHLY_PREMIUMS,

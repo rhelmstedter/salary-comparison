@@ -40,11 +40,12 @@ def test_apply_raise(district, raise_percent, expected):
     increases by the correct amount
     """
 
-    data, degree, units = SALARY_PARAMETERS["Bachelor's and 30 units"]
-    salary = Salary(deepcopy(data), degree, units)
-    salary.apply_proposed_raise(district, raise_percent)
-    earnings = salary.calc_career_earnings()
-    actual = earnings[district]
+    actual = int(
+        Salary(*SALARY_PARAMETERS["Bachelor's and 30 units"])
+        .apply_proposed_raise(district, raise_percent)
+        .salary_data[district]
+        .sum()
+    )
     assert actual == int(expected)
 
 
