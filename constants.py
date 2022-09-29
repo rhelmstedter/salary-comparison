@@ -1,5 +1,5 @@
 
-MONTHLY_PREMIUMS = {
+MONTHLY_PREMIUMS: dict[str, int] = {
     "CVUSD": 160,
     "FUSD": 300,
     "HESD": 0,
@@ -15,4 +15,7 @@ MONTHLY_PREMIUMS = {
     "VUSD": 0,
 }
 
-DISTRICTS = list(MONTHLY_PREMIUMS.keys())
+DISTRICTS: list[str] = sorted(MONTHLY_PREMIUMS.keys())
+
+if __name__ == "__main__":
+    print(type(DISTRICTS))

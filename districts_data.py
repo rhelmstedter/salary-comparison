@@ -11,7 +11,7 @@ def _create_dataframe(filename: str) -> pd.DataFrame:
     )
 
 
-disticts_and_files = (
+disticts_and_files: tuple[str] = (
     ("CVUSD", "2022-2023-ConejoValley.csv"),
     ("FUSD", "2022-2023-Fillmore.csv"),
     ("HESD", "2022-2023-Hueneme.csv"),
@@ -26,7 +26,9 @@ disticts_and_files = (
     ("SVUSD", "2022-2023-SimiValley.csv"),
     ("VUSD", "2022-2023-Ventura.csv"),
 )
-salary_scales = {district: _create_dataframe(file) for district, file in disticts_and_files}
+salary_scales: dict[str, pd.DataFrame] = {
+    district: _create_dataframe(file) for district, file in disticts_and_files
+}
 
 # NOTE: The order of the dataframes must match the order of DISTRICTS because
 # otherwise the colmun names don't align properly. Currently, both are in lexicographical
@@ -184,7 +186,7 @@ masters_75_units: pd.DataFrame = pd.concat(
     ignore_index=True,
 ).rename(columns={i: district for i, district in enumerate(DISTRICTS)})
 
-SALARY_PARAMETERS = {
+SALARY_PARAMETERS: dict[str, tuple[pd.DataFrame, str, int]] = {
     "Bachelor's and 30 units": (bachelors_30_units, "Bachelor's", 30),
     "Bachelor's and 45 units": (bachelors_45_units, "Bachelor's", 45),
     "Bachelor's and 60 units": (bachelors_60_units, "Bachelor's", 60),

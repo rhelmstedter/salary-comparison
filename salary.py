@@ -2,12 +2,17 @@ import pandas as pd
 
 
 class Salary:
-    """A class to represent a salary."""
+    """A class to represent a teaching salary.
+
+    :salary_data: A pandas dataframe containing the annual salary.
+    :degree: The degree held by the teacher, either 'Bachelor's' or 'Master's'
+    :units: The number of units held by the teacher.
+    """
 
     def __init__(self, salary_data=pd.DataFrame, degree=str, units=int):
         """Contructs attributes for the salary object.
 
-        :salary_data: A pandas dataframe containing the annually salary.
+        :salary_data: A pandas dataframe containing the annual salary.
         :degree: The degree held by the teacher, either 'Bachelor's' or 'Master's'
         :units: The number of units held by the teacher.
         """

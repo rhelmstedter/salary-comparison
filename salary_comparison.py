@@ -11,6 +11,8 @@ from salary import Salary
 TEAL = "#079A82"
 LIGHTGRAY = "#eeeeee"
 GRAY = "#aaaaaa"
+MONTHS_PER_YEAR = 12
+CAREER_LENGTH = 36
 
 
 def calc_career_deltas(
@@ -34,7 +36,8 @@ def calc_career_deltas(
     """
     districts = career_earnings.keys()
     career_premiums = {
-        district: (monthly * 12 * 36) for district, monthly in monthly_premiums.items()
+        district: (monthly * MONTHS_PER_YEAR * CAREER_LENGTH)
+        for district, monthly in monthly_premiums.items()
     }
     if include_focus:
         career_earnings_deltas = [
@@ -63,7 +66,7 @@ def calc_career_deltas(
 def calc_expected_value(
     career_earnings_deltas: list,
     career_earnings_deltas_insurance: list,
-) -> float:
+) -> int:
     """Calculates the expected value of a given district.
 
     :career_earnings_deltas: The list of deltas when opting out of insurance.
@@ -82,8 +85,8 @@ def calc_expected_value(
 
 
 def construct_analysis_content(
-    expected_value: float,
-    overall_expected_value: float,
+    expected_value: int,
+    overall_expected_value: int,
     salary: Salary,
     focus: str,
 ) -> list[html.P]:
@@ -116,8 +119,8 @@ def construct_analysis_content(
 
 def calc_overall_expected_value(
     focus: str = "VUSD",
-    raise_percent: float = 0,
-) -> float:
+    raise_percent: int = 0,
+) -> int:
     """Calculates the expected value across all degree types and unitsself.
 
     :focus: The district of focus.
@@ -154,16 +157,14 @@ def construct_lifetime_earnings_graph(
     """
     career_earnings = salary.calc_career_earnings()
     sorted_career_earnings = dict(sorted(career_earnings.items(), key=lambda x: x[1]))
-    career_earnings_deltas, career_earnings_deltas_insurance = calc_career_deltas(
+    career_deltas, career_deltas_insurance = calc_career_deltas(
         sorted_career_earnings,
         MONTHLY_PREMIUMS,
         focus,
         True,
     )
     hovertemplate = []
-    for delta, insurance_delta in zip(
-        career_earnings_deltas, career_earnings_deltas_insurance
-    ):
+    for delta, insurance_delta in zip(career_deltas, career_deltas_insurance):
         if delta == insurance_delta:
             hovertemplate.append(
                 f"${-1*insurance_delta/1000:.0f}k difference with {focus}"
@@ -186,7 +187,7 @@ def construct_lifetime_earnings_graph(
             )
     colors = [
         LIGHTGRAY,
-    ] * len(DISTRICTS)
+    ] * len(career_earnings)
     focus_index = list(sorted_career_earnings.keys()).index(focus)
     colors[focus_index] = TEAL
     fig = go.Figure()

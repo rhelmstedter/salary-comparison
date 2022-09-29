@@ -18,10 +18,7 @@ from salary_comparison import (
     construct_lifetime_earnings_graph,
 )
 
-SORTED_DISTRICTS = [
-    {"label": district, "value": district} for district in sorted(DISTRICTS)
-]
-DEFAULT_SALARY = Salary(*SALARY_PARAMETERS["Master's and 60 units"])
+default_salary: Salary = Salary(*SALARY_PARAMETERS["Master's and 60 units"])
 
 external_stylesheets = [
     {
@@ -54,7 +51,7 @@ app.layout = html.Div(
                         html.Div("District", className="menu-title"),
                         dcc.Dropdown(
                             id="focus",
-                            options=SORTED_DISTRICTS,
+                            options=DISTRICTS,
                             value="VUSD",
                             className="Dropdown",
                         ),
@@ -91,7 +88,7 @@ app.layout = html.Div(
         dcc.Graph(
             id="line_graph",
             figure=construct_annual_salary_graph(
-                salary=DEFAULT_SALARY,
+                salary=default_salary,
                 focus="VUSD",
             ),
             className="card",
@@ -99,7 +96,7 @@ app.layout = html.Div(
         dcc.Graph(
             id="bar_graph",
             figure=construct_lifetime_earnings_graph(
-                salary=DEFAULT_SALARY,
+                salary=default_salary,
                 focus="VUSD",
             ),
             className="card",
