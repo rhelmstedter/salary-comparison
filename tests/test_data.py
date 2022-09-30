@@ -1,15 +1,26 @@
-from copy import deepcopy
-
 import pytest
+import pandas as pd
 
-from districts_data import SALARY_PARAMETERS
 from salary import Salary
 from salary_comparison import (
     calc_career_deltas,
     calc_expected_value,
     calc_overall_expected_value,
+    construct_analysis_content,
 )
 
+
+TEST_SALARY = Salary(
+    pd.DataFrame(
+        {
+            "dist1": [500_000, 500_000, 0, 0, 0, 0],
+            "dist2": [500_000, 500_000, 500_000, 500_000, 0, 0],
+            "dist3": [500_000, 500_000, 500_000, 500_000, 500_000, 500_000],
+        }
+    ),
+    "Bachelor's",
+    "15",
+)
 TEST_EARNINGS = {
     "dist1": 1_000_000,
     "dist2": 2_000_000,
@@ -27,12 +38,25 @@ TEST_DIFFERENT_MONTHLY_PREMIUMS = {
 }
 
 
+def test_analysis_content(capfd):
+    """Confirm expected value, focus district, and salary parameters are displayed
+    correctly
+    """
+    print(construct_analysis_content(-234699, 3700, TEST_SALARY, "dist1"))
+    output = capfd.readouterr()[0]
+    assert "dist1" in output
+    assert "expected value of $-235,000" in output
+    assert "expected value of $4,000" in output
+    assert "Bachelor's" in output
+    assert "15 units" in output
+
+
 @pytest.mark.parametrize(
     "district, raise_percent, expected",
     [
-        ("VUSD", 3, int(2640309 * 1.03)),
-        ("CVUSD", 8, int(2832936 * 1.08)),
-        ("OUHSD", 11, int(3398180 * 1.11)),
+        ("dist1", 3, 1_030_000),
+        ("dist2", 8, 2_160_000),
+        ("dist3", 11, 3_330_000),
     ],
 )
 def test_apply_raise(district, raise_percent, expected):
@@ -41,8 +65,8 @@ def test_apply_raise(district, raise_percent, expected):
     """
 
     actual = int(
-        Salary(*SALARY_PARAMETERS["Bachelor's and 30 units"])
-        .apply_proposed_raise(district, raise_percent)
+        # SALARY_PARAMETERS["Bachelor's and 30 units"]
+        TEST_SALARY.apply_proposed_raise(district, raise_percent)
         .salary_data[district]
         .sum()
     )
@@ -115,4 +139,20 @@ def test_career_deltas_different_premiums():
         "dist1",
     )
     expected = ([0, -1_000_000, -2_000_000], [0, -1_004_320, -1_961_120])
+    assert actual == expected
+
+
+def test_salary_repr():
+    """Test __repr__ output."""
+    actual = TEST_SALARY.__repr__()
+    expected = (
+        "Salary(salary_data=DataFrame with shape: (6, 3), degree=Bachelor's, units=15)"
+    )
+    assert actual == expected
+
+
+def test_salary_str():
+    """Test __str__ output."""
+    actual = TEST_SALARY.__str__()
+    expected = "Salary with a Bachelor's and 15 units."
     assert actual == expected
