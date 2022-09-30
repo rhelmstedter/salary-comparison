@@ -24,7 +24,10 @@ class Salary:
         self.units = units
 
     def __repr__(self) -> str:
-        return f"Salary(salary_data={self.salary_data}, degree={self.degree}, units={self.units}"
+        return f"Salary(salary_data=DataFrame with shape: {self.salary_data.shape}, degree={self.degree}, units={self.units})"
+
+    def __str__(self) -> str:
+        return f"Salary with a {self.degree} and {self.units} units."
 
     def apply_proposed_raise(
         self,
