@@ -128,12 +128,10 @@ def calc_overall_expected_value(
     :returns: The overall expected value rounded to the thousands place.
     """
     expected_values = []
-    for data, degree, units in SALARY_PARAMETERS.values():
-        career_earnings = (
-            Salary(data, degree, units)
-            .apply_proposed_raise(focus, raise_percent)
-            .calc_career_earnings()
-        )
+    for salary in SALARY_PARAMETERS.values():
+        career_earnings = salary.apply_proposed_raise(
+            focus, raise_percent
+        ).calc_career_earnings()
         deltas = calc_career_deltas(
             career_earnings,
             MONTHLY_PREMIUMS,
@@ -344,7 +342,3 @@ def construct_annual_salary_graph(
     )
     fig.update_layout(annotations=annotations)
     return fig
-
-
-if __name__ == "__main__":
-    print(calc_overall_expected_value())

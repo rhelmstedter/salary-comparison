@@ -16,7 +16,7 @@ from salary_comparison import (
     construct_lifetime_earnings_graph,
 )
 
-default_salary: Salary = Salary(*SALARY_PARAMETERS["Master's and 60 units"])
+default_salary: Salary = SALARY_PARAMETERS["Master's and 60 units"]
 
 external_stylesheets = [
     {
@@ -136,7 +136,7 @@ def update_layout(
 
     :returns: The bar graph, the line graph, and the expected value analysis content.
     """
-    salary = Salary(*SALARY_PARAMETERS[degree_and_units]).apply_proposed_raise(
+    salary = SALARY_PARAMETERS[degree_and_units].apply_proposed_raise(
         focus, raise_percent
     )
     bar_graph = construct_lifetime_earnings_graph(

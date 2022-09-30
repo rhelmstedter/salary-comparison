@@ -1,6 +1,7 @@
 import pandas as pd
 
 from constants import DISTRICTS
+from salary import Salary
 
 
 def _create_dataframe(filename: str) -> pd.DataFrame:
@@ -186,16 +187,13 @@ masters_75_units: pd.DataFrame = pd.concat(
     ignore_index=True,
 ).rename(columns={i: district for i, district in enumerate(DISTRICTS)})
 
-SALARY_PARAMETERS: dict[str, tuple[pd.DataFrame, str, int]] = {
-    "Bachelor's and 30 units": (bachelors_30_units, "Bachelor's", 30),
-    "Bachelor's and 45 units": (bachelors_45_units, "Bachelor's", 45),
-    "Bachelor's and 60 units": (bachelors_60_units, "Bachelor's", 60),
-    "Bachelor's and 75 units": (bachelors_75_units, "Bachelor's", 75),
-    "Master's and 30 units": (masters_30_units, "Master's", 30),
-    "Master's and 45 units": (masters_45_units, "Master's", 45),
-    "Master's and 60 units": (masters_60_units, "Master's", 60),
-    "Master's and 75 units": (masters_75_units, "Master's", 75),
+SALARY_PARAMETERS: dict[str, Salary] = {
+    "Bachelor's and 30 units": Salary(bachelors_30_units, "Bachelor's", 30),
+    "Bachelor's and 45 units": Salary(bachelors_45_units, "Bachelor's", 45),
+    "Bachelor's and 60 units": Salary(bachelors_60_units, "Bachelor's", 60),
+    "Bachelor's and 75 units": Salary(bachelors_75_units, "Bachelor's", 75),
+    "Master's and 30 units": Salary(masters_30_units, "Master's", 30),
+    "Master's and 45 units": Salary(masters_45_units, "Master's", 45),
+    "Master's and 60 units": Salary(masters_60_units, "Master's", 60),
+    "Master's and 75 units": Salary(masters_75_units, "Master's", 75),
 }
-
-if __name__ == "__main__":
-    pass

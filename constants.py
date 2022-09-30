@@ -16,6 +16,3 @@ MONTHLY_PREMIUMS: dict[str, int] = {
 }
 
 DISTRICTS: list[str] = sorted(MONTHLY_PREMIUMS.keys())
-
-if __name__ == "__main__":
-    print(type(DISTRICTS))
