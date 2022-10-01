@@ -1,7 +1,5 @@
 import pytest
-import pandas as pd
 
-from salary import Salary
 from salary_comparison import (
     calc_career_deltas,
     calc_expected_value,
@@ -9,47 +7,13 @@ from salary_comparison import (
     construct_analysis_content,
     construct_hovertemplate,
 )
-
-
-TEST_SALARY = Salary(
-    pd.DataFrame(
-        {
-            "dist1": [500_000, 500_000, 0, 0, 0, 0],
-            "dist2": [500_000, 500_000, 500_000, 500_000, 0, 0],
-            "dist3": [500_000, 500_000, 500_000, 500_000, 500_000, 500_000],
-        }
-    ),
-    "Bachelor's",
-    "15",
+from .test_constants import (
+    TEST_SALARY,
+    TEST_EARNINGS,
+    TEST_SAME_MONTHLY_PREMIUMS,
+    TEST_DIFFERENT_MONTHLY_PREMIUMS,
+    TEST_CAREER_DELTAS,
 )
-TEST_EARNINGS = {
-    "dist1": 1_000_000,
-    "dist2": 2_000_000,
-    "dist3": 3_000_000,
-}
-TEST_SAME_MONTHLY_PREMIUMS = {
-    "dist1": 10,
-    "dist2": 10,
-    "dist3": 10,
-}
-TEST_DIFFERENT_MONTHLY_PREMIUMS = {
-    "dist1": 10,
-    "dist2": 0,
-    "dist3": 100,
-}
-TEST_CAREER_DELTAS = ([-10_000, -3_000, 0, 9_000, -2_000, 11_000, 4_000], [-8_000, -5_000, 0, 8_000, 1_000, 12_000, -7_000])
-
-
-def test_hover_template(capfd):
-    print(construct_hovertemplate(TEST_CAREER_DELTAS[0], TEST_CAREER_DELTAS[1], "dist1"))
-    output = capfd.readouterr()[0]
-    assert "$-9k to $-8k difference with dist1" in output
-    assert "$3k to $5k difference with dist1" in output
-    assert "$8k to $10k difference with dist1" in output
-    assert "$0k difference with dist1" in output
-    assert "$-1k to $2k difference with dist1" in output
-    assert "$-12k to $-11k difference with dist1" in output
-    assert "$-4k to $7k difference with dist1" in output
 
 
 def test_analysis_content(capfd):
@@ -154,6 +118,20 @@ def test_career_deltas_different_premiums():
     )
     expected = ([0, -1_000_000, -2_000_000], [0, -1_004_320, -1_961_120])
     assert actual == expected
+
+
+def test_hover_template(capfd):
+    print(
+        construct_hovertemplate(TEST_CAREER_DELTAS[0], TEST_CAREER_DELTAS[1], "dist1")
+    )
+    output = capfd.readouterr()[0]
+    assert "$-9k to $-8k difference with dist1" in output
+    assert "$3k to $5k difference with dist1" in output
+    assert "$8k to $10k difference with dist1" in output
+    assert "$0k difference with dist1" in output
+    assert "$-1k to $2k difference with dist1" in output
+    assert "$-12k to $-11k difference with dist1" in output
+    assert "$-4k to $7k difference with dist1" in output
 
 
 def test_salary_repr():
