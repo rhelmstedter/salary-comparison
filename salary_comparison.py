@@ -23,13 +23,13 @@ def calc_career_deltas(
     """Calculates the deltas in earnings across a 36 year teaching career accounting
         monthly premiums.
 
-    :career_earnings: A dictionary with keys containing the district abbreviations and
+    :param career_earnings: A dictionary with keys containing the district abbreviations and
         values of the career earnings for each district.
-    :focus: The district of focus. All other earnings are subtracted from this district.
-    :degree: The degree held by the teacher, either Bachelor's or Master's.
-    :units: The number of units obtained by the teacher.
+    :param focus: The district of focus. All other earnings are subtracted from this district.
+    :param degree: The degree held by the teacher, either Bachelor's or Master's.
+    :param units: The number of units obtained by the teacher.
 
-    :returns: The lists of deltas between the focus district and the list of districts.
+    :return: The lists of deltas between the focus district and the list of districts.
         The first list accounts for opting out of insurance. The second list accounts
         for opting into insurance.
     """
@@ -68,10 +68,10 @@ def calc_expected_value(
 ) -> int:
     """Calculates the expected value of a given district.
 
-    :career_earnings_deltas: The list of deltas when opting out of insurance.
-    :career_earnings_deltas_insurance: The list of deltas when opting in to insurance.
+    :param career_earnings_deltas: The list of deltas when opting out of insurance.
+    :param career_earnings_deltas_insurance: The list of deltas when opting in to insurance.
 
-    :returns: The expected value rounded to the thousands place.
+    :return: The expected value rounded to the thousands place.
     """
     total_deltas = sum(
         delta + insurance_delta
@@ -91,13 +91,13 @@ def construct_analysis_content(
 ) -> list[html.P]:
     """Contructs the anaylsis content displayed under the graphs.
 
-    :expected_value: The expected value of an employee in the focus district.
-    :overall_expected_value: The expected value across all degree types and units of an
+    :param expected_value: The expected value of an employee in the focus district.
+    :param overall_expected_value: The expected value across all degree types and units of an
         employee in the focus district.
-    :salary: The Salary object used in the anaylsis.
-    :focus: The district of focus. All other earnings are subtracted from this district.
+    :param salary: The Salary object used in the anaylsis.
+    :param focus: The district of focus. All other earnings are subtracted from this district.
 
-    :returns: A list of html paragraphs that display the expected value.
+    :return: A list of html paragraphs that display the expected value.
     """
     analysis_content = []
     analysis_content.append(
@@ -122,10 +122,10 @@ def calc_overall_expected_value(
 ) -> int:
     """Calculates the expected value across all degree types and unitsself.
 
-    :focus: The district of focus.
-    :raise_percent: The proposed raise as a percentage.
+    :param focus: The district of focus.
+    :param raise_percent: The proposed raise as a percentage.
 
-    :returns: The overall expected value rounded to the thousands place.
+    :return: The overall expected value rounded to the thousands place.
     """
     expected_values = []
     for salary in SALARY_PARAMETERS.values():
@@ -142,31 +142,27 @@ def calc_overall_expected_value(
     return int(mean(item for item in expected_values))
 
 
-def construct_lifetime_earnings_graph(
-    salary: Salary,
-    focus: str,
-) -> go.Figure:
-    """Constructs a horizontal barchart of lifetime earnings and displays the difference
-        between a district and the focus on hover.
+def construct_hovertemplate(career_deltas, career_deltas_insurance, focus) -> list[str]:
+    """Constring the hovertemplate that displays the difference in salary in the barchar.
 
-    :salary: The Salary object used to construct the graph.
-    :focus: The district of focus. All other earnings are subtracted from this district.
+    :param career_deltas: The list of deltas when opting out of insurance.
+    :param career_earnings_deltas_insurance: The list of deltas when opting in to
+        insurance.
+    :param focus: The district that is highlighted on the barchart.
 
-    :returns: The plotly figure that contains the lifetime earnings barchart
+    :return: A list of strings containing the text to display when hovering over the
+        barchart.
     """
-    career_earnings = salary.calc_career_earnings()
-    sorted_career_earnings = dict(sorted(career_earnings.items(), key=lambda x: x[1]))
-    career_deltas, career_deltas_insurance = calc_career_deltas(
-        sorted_career_earnings,
-        MONTHLY_PREMIUMS,
-        focus,
-        True,
-    )
+
     hovertemplate = []
     for delta, insurance_delta in zip(career_deltas, career_deltas_insurance):
         if delta == insurance_delta:
             hovertemplate.append(
                 f"${-1*insurance_delta/1000:.0f}k difference with {focus}"
+            )
+        elif (insurance_delta < 0 and delta < 0) and (insurance_delta < delta):
+            hovertemplate.append(
+                f"${-1*delta/1000:.0f}k to ${-1*insurance_delta/1000:.0f}k difference with {focus}"
             )
         elif insurance_delta < 0 and delta < 0:
             hovertemplate.append(
@@ -176,14 +172,46 @@ def construct_lifetime_earnings_graph(
             hovertemplate.append(
                 f"${-1*insurance_delta/1000:.0f}k to ${-1*delta/1000:.0f}k difference with {focus}"
             )
-        elif insurance_delta > 0 and delta > 0:
+        elif (insurance_delta > 0 and delta > 0) and (insurance_delta > delta):
             hovertemplate.append(
                 f"${-1*insurance_delta/1000:.0f}k to ${-1*delta/1000:.0f}k difference with {focus}"
+            )
+        elif insurance_delta > 0 and delta > 0:
+            hovertemplate.append(
+                f"${-1*delta/1000:.0f}k to ${-1*insurance_delta/1000:.0f}k difference with {focus}"
             )
         elif insurance_delta < 0 and delta > 0:
             hovertemplate.append(
                 f"${-1*delta/1000:.0f}k to ${-1*insurance_delta/1000:.0f}k difference with {focus}"
             )
+    return hovertemplate
+
+
+def construct_lifetime_earnings_graph(
+    salary: Salary,
+    focus: str,
+) -> go.Figure:
+    """Constructs a horizontal barchart of lifetime earnings and displays the difference
+        between a district and the focus on hover.
+
+    :param salary: The Salary object used to construct the graph.
+    :param focus: The district of focus. All other earnings are subtracted from this district.
+
+    :return: The plotly figure that contains the lifetime earnings barchart
+    """
+    career_earnings = salary.calc_career_earnings()
+    sorted_career_earnings = dict(sorted(career_earnings.items(), key=lambda x: x[1]))
+    career_deltas, career_deltas_insurance = calc_career_deltas(
+        sorted_career_earnings,
+        MONTHLY_PREMIUMS,
+        focus,
+        True,
+    )
+    hovertemplate = construct_hovertemplate(
+        career_deltas,
+        career_deltas_insurance,
+        focus,
+    )
     colors = [
         LIGHTGRAY,
     ] * len(career_earnings)
@@ -247,10 +275,10 @@ def construct_annual_salary_graph(
 ) -> go.Figure:
     """Creates the line plot of the annual salary for each district.
 
-    :salary: The Salary object used to construct the graph.
-    :focus: The district to highlight in on the chart.
+    :param salary: The Salary object used to construct the graph.
+    :param focus: The district to highlight in on the chart.
 
-    :returns: The plotly figure that contains the annual salary vs years teaching
+    :return: The plotly figure that contains the annual salary vs years teaching
     """
 
     fig = go.Figure()

@@ -7,6 +7,7 @@ from salary_comparison import (
     calc_expected_value,
     calc_overall_expected_value,
     construct_analysis_content,
+    construct_hovertemplate,
 )
 
 
@@ -36,6 +37,19 @@ TEST_DIFFERENT_MONTHLY_PREMIUMS = {
     "dist2": 0,
     "dist3": 100,
 }
+TEST_CAREER_DELTAS = ([-10_000, -3_000, 0, 9_000, -2_000, 11_000, 4_000], [-8_000, -5_000, 0, 8_000, 1_000, 12_000, -7_000])
+
+
+def test_hover_template(capfd):
+    print(construct_hovertemplate(TEST_CAREER_DELTAS[0], TEST_CAREER_DELTAS[1], "dist1"))
+    output = capfd.readouterr()[0]
+    assert "$-9k to $-8k difference with dist1" in output
+    assert "$3k to $5k difference with dist1" in output
+    assert "$8k to $10k difference with dist1" in output
+    assert "$0k difference with dist1" in output
+    assert "$-1k to $2k difference with dist1" in output
+    assert "$-12k to $-11k difference with dist1" in output
+    assert "$-4k to $7k difference with dist1" in output
 
 
 def test_analysis_content(capfd):
