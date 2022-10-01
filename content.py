@@ -4,13 +4,17 @@ intro = """This dashboard displays the estimated lifetime earnings for several s
 
 updates = """## Updates
 
+### 10/01/22
+
+Fixed an issue where some of hover text was displayed out of order.
+
 ### 09/19/22
 
 While testing the analysis, I came across an error in the calculations of the expected value. I was including the focus district while taking the average. This has the effect of pulling the expected values closer to zero since a district compared to itself always has a delta of zero. Districts furthest away from the mean were affected the most. To offer a concrete example, VUSD's (incorrect) overall expected value was $-311,000. With the correction in place this decreased to $-337,000.
 
 ### 09/17/22
 
-SVUSD just agreed to an 9% increase in pay plus an addition 4 professional development days. The pay scale has not been released on their website yet and is not yet included in this anaylsis.
+SVUSD just agreed to an 9% increase in pay plus an addition 4 professional development days. The pay scale has not been released on their website yet and is not yet included in this analysis.
 """
 
 details = """## Analysis Details
@@ -55,6 +59,6 @@ To view the difference between each district, hover over the barchart. The lower
 """
 
 outro = """## Sources and Corrections
-The goal of this page is to provide concrete data on salary diffences across districts in Ventura County. The analysis is the result of converting salary schedules from PDF to CSV files (some of which were required to be typed out by hand). While I have tried to be as accurate as possible in the analysis, it is possible that I have made mistakes when transcribing salaries or in the various calculations. If anyone notices a mistake or has more accurate salary/benefit data please contact me at rhelmstedter@gmail.com. I will do my best to correct it as soon a possible.
+The goal of this page is to provide concrete data on salary differences across districts in Ventura County. The analysis is the result of converting salary schedules from PDF to CSV files (some of which were required to be typed out by hand). While I have tried to be as accurate as possible in the analysis, it is possible that I have made mistakes when transcribing salaries or in the various calculations. If anyone notices a mistake or has more accurate salary/benefit data please contact me at rhelmstedter@gmail.com. I will do my best to correct it as soon a possible.
 
 All of the salary schedules are publicly available in PDF form from the respective district websites. They can also be found in both PDF and CSV form on the [github repo](https://github.com/rhelmstedter/salary-comparison). The code, including all the calculations in salary difference and expected lifetime earnings, is written in Python and freely available in the [github repo](https://github.com/rhelmstedter/salary-comparison)."""
