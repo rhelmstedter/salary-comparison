@@ -69,8 +69,8 @@ def test_overall_expected_value():
     """Calculate the overall expected value for all districts
     with VUSD as the focus
     """
-    actual = calc_overall_expected_value()
-    expected = -336719
+    actual = round(calc_overall_expected_value(), -3)
+    expected = -369_000
     assert actual == expected
 
 
