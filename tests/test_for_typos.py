@@ -17,14 +17,12 @@ from districts_data import SALARY_PARAMETERS
         (SALARY_PARAMETERS["Master's and 60 units"], "SPUSD", 3606832),
         (SALARY_PARAMETERS["Master's and 75 units"], "RSD", 3463724),
         (SALARY_PARAMETERS["Master's and 75 units"], "FUSD", 3392456),
-        (SALARY_PARAMETERS["Master's and 75 units"], "SVUSD", 3102034),
+        (SALARY_PARAMETERS["Master's and 75 units"], "SVUSD", 3512115),
         (SALARY_PARAMETERS["Master's and 75 units"], "MUSD", 3088200),
         (SALARY_PARAMETERS["Master's and 75 units"], "VUSD", 3097190),
     ],
 )
 def test_earnings(salary, district, expected):
-    """Confirm that \"Bachelor's and 30 units\" dataframe is constructed
-    acurately
-    """
+    """Confirm that dataframe is constructed acurately."""
     actual = salary.calc_career_earnings()[district]
     assert actual == expected
