@@ -4,6 +4,10 @@ intro = """This dashboard displays the estimated lifetime earnings for several s
 
 updates = """## Updates
 
+### 11/07/22
+
+Updated the salary scale for SVUSD. According to the salary scale posted on their website, this was, in fact, an 11% raise with 185 contracted days. That is in conflict with the information I recieved previously (see update from 09/17/22). The document that I used is available in the data folder in the github repository. Additionally, this will impact the expected value examples in the update from 09/19/22.
+
 ### 10/01/22
 
 Fixed an issue where some of hover text was displayed out of order.
