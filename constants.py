@@ -1,4 +1,3 @@
-
 MONTHLY_PREMIUMS: dict[str, int] = {
     "CVUSD": 160,
     "FUSD": 300,
