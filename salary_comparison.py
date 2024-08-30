@@ -19,7 +19,7 @@ def calc_career_deltas(
     monthly_premiums: dict[str, int],
     focus: str,
     include_focus: bool = True,
-) -> tuple[list]:
+)-> tuple[list]:
     """Calculates the deltas in earnings across a 36 year teaching career accounting
         monthly premiums.
 

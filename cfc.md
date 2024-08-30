@@ -1,5 +1,6 @@
 ---
 title: The Case For The Cap
+author: Russell Helmstedter
 date: November 12, 2022
 geometry: margin=1in
 colorlinks: true
@@ -19,9 +20,7 @@ Accepting a cap on benefits is not, necessarily, a pay cut. After analyzing sala
 
 I believe the current offer of 10% plus a cap of $19,600 on benefits puts more money in our pocket—both short-term and long-term—and strengthens our position for larger salary increases in the future.
 
-If you have the time and are interested in the details, please keep reading. What follows is a detailed account—with examples—of how I have reached the preceding conclusions. Calculations have been made with publicly available data which has been aggregated in this [Github repository](https://github.com/rhelmstedter/salary-comparison/tree/main/data). As always, if anyone believes I have made an error in my calculations, please let me know and I will issue a correction as soon as possible.
-
-Russell Helmstedter
+If you have the time and are interested in the details, please keep reading. What follows is a detailed account—with examples—of how I have reached the preceding conclusions. Calculations have been made with publicly available data which has been aggregated in this [GitHub repository](https://github.com/rhelmstedter/salary-comparison/tree/main/data). As always, if anyone believes I have made an error in my calculations, please let me know and I will issue a correction as soon as possible.
 
 ### Accepting a Cap Increases Salary
 
@@ -86,9 +85,9 @@ That is an increase of $131 in monthly retirement benefit or approximately an ex
 ### The Cap In Context
 
 
-The proposed cap from the district is $19,600. To put this in context, Ocean View has a cap of $12,073 ([OVEA Agreement 21-22](https://drive.google.com/drive/folders/1TqhAFxPhn9reEsmIeTKB32tnn2tJREs0)). Hueneme Elementary school district has a cap of $16,800 ([HEA Agreement 2022-2023](https://core-docs.s3.amazonaws.com/documents/asset/uploaded_file/1316283/HEA_AGREEMENT_2020-2023.pdf)). Simi Valley Unified School district has a cap of $12,421 (see: [SVUSD benefits](https://simi-ca.schoolloop.com/benefits)).
+The proposed cap from the district is $19,600. To put this in context, Ocean View School District has a cap of $12,073 ([OVEA Agreement 21-22](https://drive.google.com/drive/folders/1TqhAFxPhn9reEsmIeTKB32tnn2tJREs0)). Hueneme Elementary school district has a cap of $16,800 ([HEA Agreement 2022-2023](https://core-docs.s3.amazonaws.com/documents/asset/uploaded_file/1316283/HEA_AGREEMENT_2020-2023.pdf)). Simi Valley Unified School district has a cap of $12,421 ([SVUSD benefits](https://simi-ca.schoolloop.com/benefits)).
 
-Additionally, there are several plans available that are below the cap. Employees in both Oxnard Union High School District, and Ocean View School District who choose Kaiser do not have any monthly premiums. I spoke with an employee in Ocean View. Ocean View has negotiated the use of a health savings account (HSA). The difference between the overall cost of the plan and the cap was contributed by the district into the employee's HSA. Even though their plan has a high deductible, they can use the HSA to pay the deductible.
+Additionally, there are several plans available that are below the cap. Employees in both Oxnard Union High School District and Ocean View School District who choose Kaiser do not have any monthly premiums. I spoke with an employee in Ocean View. Ocean View has negotiated the use of a health savings account (HSA). The difference between the overall cost of the plan and the cap was contributed by the district into the employee's HSA. Even though their plan has a high deductible, they can use the HSA to pay the deductible.
 
 ### Expected Value
 
