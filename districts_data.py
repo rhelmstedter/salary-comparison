@@ -31,7 +31,7 @@ salary_scales: dict[str, pd.DataFrame] = {
     district: _create_dataframe(file) for district, file in disticts_and_files
 }
 
-# NOTE: The order of the dataframes must match the order of DISTRICTS because
+# NOTE: The order of the dataframe columns must match the order of DISTRICTS because
 # otherwise the colmun names don't align properly. Currently, both are in lexicographical
 # order.
 bachelors_30_units: pd.DataFrame = pd.concat(

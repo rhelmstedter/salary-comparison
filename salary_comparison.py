@@ -19,7 +19,7 @@ def calc_career_deltas(
     monthly_premiums: dict[str, int],
     focus: str,
     include_focus: bool = True,
-)-> tuple[list]:
+) -> tuple[list]:
     """Calculates the deltas in earnings across a 36 year teaching career accounting
         monthly premiums.
 
@@ -105,7 +105,7 @@ def construct_analysis_content(
     )
     analysis_content.append(
         html.P(
-            f"""Lifetime earnings with a {salary.degree} degree with {salary.units} units has an expected value of ${round(expected_value,-3):,.0f}."""
+            f"""Lifetime earnings with a {salary.degree} degree with {salary.units} units has an expected value of ${round(expected_value, -3):,.0f}."""
         )
     )
     analysis_content.append(
@@ -158,31 +158,31 @@ def construct_hovertemplate(career_deltas, career_deltas_insurance, focus) -> li
     for delta, insurance_delta in zip(career_deltas, career_deltas_insurance):
         if delta == insurance_delta:
             hovertemplate.append(
-                f"${-1*insurance_delta/1000:.0f}k difference with {focus}"
+                f"${-1 * insurance_delta / 1000:.0f}k difference with {focus}"
             )
         elif (insurance_delta < 0 and delta < 0) and (insurance_delta < delta):
             hovertemplate.append(
-                f"${-1*delta/1000:.0f}k to ${-1*insurance_delta/1000:.0f}k difference with {focus}"
+                f"${-1 * delta / 1000:.0f}k to ${-1 * insurance_delta / 1000:.0f}k difference with {focus}"
             )
         elif insurance_delta < 0 and delta < 0:
             hovertemplate.append(
-                f"${-1*insurance_delta/1000:.0f}k to ${-1*delta/1000:.0f}k difference with {focus}"
+                f"${-1 * insurance_delta / 1000:.0f}k to ${-1 * delta / 1000:.0f}k difference with {focus}"
             )
         elif insurance_delta > 0 and delta < 0:
             hovertemplate.append(
-                f"${-1*insurance_delta/1000:.0f}k to ${-1*delta/1000:.0f}k difference with {focus}"
+                f"${-1 * insurance_delta / 1000:.0f}k to ${-1 * delta / 1000:.0f}k difference with {focus}"
             )
         elif (insurance_delta > 0 and delta > 0) and (insurance_delta > delta):
             hovertemplate.append(
-                f"${-1*insurance_delta/1000:.0f}k to ${-1*delta/1000:.0f}k difference with {focus}"
+                f"${-1 * insurance_delta / 1000:.0f}k to ${-1 * delta / 1000:.0f}k difference with {focus}"
             )
         elif insurance_delta > 0 and delta > 0:
             hovertemplate.append(
-                f"${-1*delta/1000:.0f}k to ${-1*insurance_delta/1000:.0f}k difference with {focus}"
+                f"${-1 * delta / 1000:.0f}k to ${-1 * insurance_delta / 1000:.0f}k difference with {focus}"
             )
         elif insurance_delta < 0 and delta > 0:
             hovertemplate.append(
-                f"${-1*delta/1000:.0f}k to ${-1*insurance_delta/1000:.0f}k difference with {focus}"
+                f"${-1 * delta / 1000:.0f}k to ${-1 * insurance_delta / 1000:.0f}k difference with {focus}"
             )
     return hovertemplate
 
