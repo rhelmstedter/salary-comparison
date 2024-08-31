@@ -1,0 +1,18 @@
+#+title: Salary Comparison
+#+author: Russell Helmstedter
+#+date: [2024-08-31 Sat]
+
+* Update Districts for 24-25 School Year
+ - [ ] CVUSD
+ - [ ] FUSD
+ - [ ] HESD
+ - [ ] MUSD
+ - [ ] OPUSD
+ - [ ] OSD
+ - [X] OUHSD
+ - [ ] OVSD
+ - [ ] PVSD
+ - [ ] RSD
+ - [ ] SPUSD
+ - [ ] SVUSD
+ - [X] VUSD
