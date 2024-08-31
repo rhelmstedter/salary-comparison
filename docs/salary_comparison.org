@@ -14,5 +14,5 @@
  - [ ] PVSD
  - [X] RSD
  - [X] SPUSD
- - [ ] SVUSD
+ - [X] SVUSD
  - [X] VUSD

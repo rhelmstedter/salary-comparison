@@ -21,7 +21,7 @@ disticts_and_files: tuple[str] = (
     ("PVSD", "2022-2023-PleasantValley.csv"),
     ("RSD", "2024-2025-Rio.csv"),
     ("SPUSD", "2024-2025-SantaPaula.csv"),
-    ("SVUSD", "2022-2023-SimiValley.csv"),
+    ("SVUSD", "2024-2025-SimiValley.csv"),
     ("VUSD", "2024-2025-Ventura.csv"),
 )
 salary_scales: dict[str, pd.DataFrame] = {
