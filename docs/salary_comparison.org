@@ -8,7 +8,7 @@
  - [X] HESD
  - [X] MUSD
  - [ ] OPUSD
- - [ ] OSD
+ - [X] OSD
  - [X] OUHSD
  - [ ] OVSD
  - [ ] PVSD
