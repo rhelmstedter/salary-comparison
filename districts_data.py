@@ -12,7 +12,7 @@ def _create_dataframe(filename: str) -> pd.DataFrame:
 disticts_and_files: tuple[str] = (
     ("CVUSD", "2022-2023-ConejoValley.csv"),
     ("FUSD", "2022-2023-Fillmore.csv"),
-    ("HESD", "2022-2023-Hueneme.csv"),
+    ("HESD", "2024-2025-Hueneme.csv"),
     ("MUSD", "2022-2023-Moorpark.csv"),
     ("OPUSD", "2022-2023-OakPark.csv"),
     ("OSD", "2022-2023-OxnardE.csv"),
@@ -111,7 +111,7 @@ masters_30_units: pd.DataFrame = pd.concat(
     [
         salary_scales["CVUSD"]["class 2"],
         salary_scales["FUSD"]["class 6"],
-        salary_scales["HESD"]["class 4"],
+        salary_scales["HESD"]["class 5"],
         salary_scales["MUSD"]["class 6"],
         salary_scales["OPUSD"]["class 3"],
         salary_scales["OSD"]["class 3"],

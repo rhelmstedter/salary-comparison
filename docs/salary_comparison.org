@@ -5,7 +5,7 @@
 * Update Districts for 24-25 School Year
  - [ ] CVUSD
  - [ ] FUSD
- - [ ] HESD
+ - [X] HESD
  - [ ] MUSD
  - [ ] OPUSD
  - [ ] OSD
