@@ -10,9 +10,9 @@
  - [ ] OPUSD
  - [X] OSD
  - [X] OUHSD
- - [ ] OVSD
+ - [X] OVSD
  - [ ] PVSD
- - [ ] RSD
+ - [X] RSD
  - [ ] SPUSD
  - [ ] SVUSD
  - [X] VUSD
