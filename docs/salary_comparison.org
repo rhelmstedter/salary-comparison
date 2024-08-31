@@ -6,7 +6,7 @@
  - [ ] CVUSD
  - [ ] FUSD
  - [X] HESD
- - [ ] MUSD
+ - [X] MUSD
  - [ ] OPUSD
  - [ ] OSD
  - [X] OUHSD

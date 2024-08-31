@@ -13,7 +13,7 @@ disticts_and_files: tuple[str] = (
     ("CVUSD", "2022-2023-ConejoValley.csv"),
     ("FUSD", "2022-2023-Fillmore.csv"),
     ("HESD", "2024-2025-Hueneme.csv"),
-    ("MUSD", "2022-2023-Moorpark.csv"),
+    ("MUSD", "2024-2025-Moorpark.csv"),
     ("OPUSD", "2022-2023-OakPark.csv"),
     ("OSD", "2022-2023-OxnardE.csv"),
     ("OUHSD", "2024-2025-OxnardU.csv"),
