@@ -6,10 +6,7 @@ from salary import Salary
 
 def _create_dataframe(filename: str) -> pd.DataFrame:
     """helper function to use in the salary_scales dictionary comprehension."""
-    return pd.read_csv(
-        f"https://raw.githubusercontent.com/rhelmstedter/salary-comparison/24-25_school_year/data/{filename}",
-        index_col="step",
-    )
+    return pd.read_csv(f"./data/{filename}", index_col="step")
 
 
 disticts_and_files: tuple[str] = (
