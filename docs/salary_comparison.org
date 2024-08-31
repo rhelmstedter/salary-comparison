@@ -13,6 +13,6 @@
  - [X] OVSD
  - [ ] PVSD
  - [X] RSD
- - [ ] SPUSD
+ - [X] SPUSD
  - [ ] SVUSD
  - [X] VUSD
