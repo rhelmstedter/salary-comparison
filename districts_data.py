@@ -7,7 +7,7 @@ from salary import Salary
 def _create_dataframe(filename: str) -> pd.DataFrame:
     """helper function to use in the salary_scales dictionary comprehension."""
     return pd.read_csv(
-        f"https://raw.githubusercontent.com/rhelmstedter/salary-comparison/main/data/{filename}",
+        f"https://raw.githubusercontent.com/rhelmstedter/salary-comparison/24-25_school_year/data/{filename}",
         index_col="step",
     )
 
@@ -25,7 +25,7 @@ disticts_and_files: tuple[str] = (
     ("RSD", "2022-2023-Rio.csv"),
     ("SPUSD", "2022-2023-SantaPaula.csv"),
     ("SVUSD", "2022-2023-SimiValley.csv"),
-    ("VUSD", "2022-2023-Ventura.csv"),
+    ("VUSD", "2024-2025-Ventura.csv"),
 )
 salary_scales: dict[str, pd.DataFrame] = {
     district: _create_dataframe(file) for district, file in disticts_and_files
