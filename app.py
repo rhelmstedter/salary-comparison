@@ -27,13 +27,13 @@ external_stylesheets = [
 ]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
-app.title = "VC Schools Lifetime Earnings"
+app.title = "Teacher Salaries Ventura County"
 app.layout = html.Div(
     [
         html.Div(
             children=[
                 html.H1(
-                    children="Lifetime Earnings For Teachers", className="header-title"
+                    children="Teacher Salaries in Ventura County", className="header-title"
                 ),
                 html.P(
                     children="The estimated lifetime earnings for teachers in Ventura County, CA.",
