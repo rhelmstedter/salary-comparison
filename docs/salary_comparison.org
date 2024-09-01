@@ -3,8 +3,8 @@
 #+date: [2024-08-31 Sat]
 
 * Update Districts for 24-25 School Year
- - [ ] CVUSD
- - [ ] FUSD
+ - [X] CVUSD (23-24 is the most current salary scale)
+ - [X] FUSD
  - [X] HESD
  - [X] MUSD
  - [ ] OPUSD

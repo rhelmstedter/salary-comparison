@@ -10,8 +10,8 @@ def _create_dataframe(filename: str) -> pd.DataFrame:
 
 
 disticts_and_files: tuple[str] = (
-    ("CVUSD", "2022-2023-ConejoValley.csv"),
-    ("FUSD", "2022-2023-Fillmore.csv"),
+    ("CVUSD", "2023-2024-ConejoValley.csv"),
+    ("FUSD", "2023-2024-Flllmore.csv"),
     ("HESD", "2024-2025-Hueneme.csv"),
     ("MUSD", "2024-2025-Moorpark.csv"),
     ("OPUSD", "2022-2023-OakPark.csv"),
@@ -34,7 +34,7 @@ salary_scales: dict[str, pd.DataFrame] = {
 bachelors_30_units: pd.DataFrame = pd.concat(
     [
         salary_scales["CVUSD"]["class 2"],
-        salary_scales["FUSD"]["class 3"],
+        salary_scales["FUSD"]["class 1"],
         salary_scales["HESD"]["class 3"],
         salary_scales["MUSD"]["class 3"],
         salary_scales["OPUSD"]["class 2"],
@@ -53,7 +53,7 @@ bachelors_30_units: pd.DataFrame = pd.concat(
 bachelors_45_units: pd.DataFrame = pd.concat(
     [
         salary_scales["CVUSD"]["class 3"],
-        salary_scales["FUSD"]["class 4"],
+        salary_scales["FUSD"]["class 2"],
         salary_scales["HESD"]["class 4"],
         salary_scales["MUSD"]["class 4"],
         salary_scales["OPUSD"]["class 3"],
@@ -72,7 +72,7 @@ bachelors_45_units: pd.DataFrame = pd.concat(
 bachelors_60_units: pd.DataFrame = pd.concat(
     [
         salary_scales["CVUSD"]["class 4"],
-        salary_scales["FUSD"]["class 4"],
+        salary_scales["FUSD"]["class 2"],
         salary_scales["HESD"]["class 5"],
         salary_scales["MUSD"]["class 5"],
         salary_scales["OPUSD"]["class 4"],
@@ -91,7 +91,7 @@ bachelors_60_units: pd.DataFrame = pd.concat(
 bachelors_75_units: pd.DataFrame = pd.concat(
     [
         salary_scales["CVUSD"]["class 4"],
-        salary_scales["FUSD"]["class 5"],
+        salary_scales["FUSD"]["class 2"],
         salary_scales["HESD"]["class 5"],
         salary_scales["MUSD"]["class 5"],
         salary_scales["OPUSD"]["class 5"],
@@ -110,7 +110,7 @@ bachelors_75_units: pd.DataFrame = pd.concat(
 masters_30_units: pd.DataFrame = pd.concat(
     [
         salary_scales["CVUSD"]["class 2"],
-        salary_scales["FUSD"]["class 6"],
+        salary_scales["FUSD"]["class 4"],
         salary_scales["HESD"]["class 5"],
         salary_scales["MUSD"]["class 6"],
         salary_scales["OPUSD"]["class 3"],
@@ -129,7 +129,7 @@ masters_30_units: pd.DataFrame = pd.concat(
 masters_45_units: pd.DataFrame = pd.concat(
     [
         salary_scales["CVUSD"]["class 3"],
-        salary_scales["FUSD"]["class 6"],
+        salary_scales["FUSD"]["class 4"],
         salary_scales["HESD"]["class 5"],
         salary_scales["MUSD"]["class 6"],
         salary_scales["OPUSD"]["class 4"],
@@ -148,7 +148,7 @@ masters_45_units: pd.DataFrame = pd.concat(
 masters_60_units: pd.DataFrame = pd.concat(
     [
         salary_scales["CVUSD"]["class 4"],
-        salary_scales["FUSD"]["class 6"],
+        salary_scales["FUSD"]["class 4"],
         salary_scales["HESD"]["class 5"],
         salary_scales["MUSD"]["class 6"],
         salary_scales["OPUSD"]["class 5"],
@@ -167,7 +167,7 @@ masters_60_units: pd.DataFrame = pd.concat(
 masters_75_units: pd.DataFrame = pd.concat(
     [
         salary_scales["CVUSD"]["class 5"],
-        salary_scales["FUSD"]["class 6"],
+        salary_scales["FUSD"]["class 4"],
         salary_scales["HESD"]["class 5"],
         salary_scales["MUSD"]["class 6"],
         salary_scales["OPUSD"]["class 5"],
