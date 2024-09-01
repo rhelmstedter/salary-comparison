@@ -4,14 +4,14 @@
 
 * Update Districts for 24-25 School Year
  - [X] CVUSD (23-24 is the most current salary scale)
- - [X] FUSD
+ - [X] FUSD (23-24 is the most current salary scale)
  - [X] HESD
  - [X] MUSD
- - [ ] OPUSD
+ - [X] OPUSD (23-24 is the most current salary scale)
  - [X] OSD
  - [X] OUHSD
  - [X] OVSD
- - [ ] PVSD
+ - [X] PVSD (23-24 is the most current salary scale)
  - [X] RSD
  - [X] SPUSD
  - [X] SVUSD
